@@ -1,0 +1,4 @@
+*~
+obj
+gmake/config.mak
+*.swp
