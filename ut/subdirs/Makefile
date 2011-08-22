@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <08/11/17 21:38:45 ptr>
+# -*- Makefile -*- Time-stamp: <2011-08-22 19:10:10 ptr>
 
-SRCROOT := ../../..
+RULESBASE := ../..
 
 # EXTRA_POST := checks
 # EXTRA_POST_DBG := checks-dbg
@@ -9,7 +9,7 @@ SRCROOT := ../../..
 SUBDIRS := one two three
 DESTDIR := dest
 
-include ${SRCROOT}/Makefiles/gmake/subdirs.mak
+include ${RULESBASE}/gmake/subdirs.mak
 
 check0:
 	$(call doinsubdirs,${SUBDIRS})

@@ -1,10 +1,10 @@
-# -*- Makefile -*- Time-stamp: <08/12/02 00:41:15 ptr>
+# -*- Makefile -*- Time-stamp: <2011-08-22 19:10:46 ptr>
 
-SRCROOT := ../../..
+RULESBASE := ../..
 # EXTRA_POST := checks
 
 include Makefile.inc
-include ${SRCROOT}/Makefiles/gmake/top.mak
+include ${RULESBASE}/gmake/top.mak
 
 INCLUDES += -I./include
 

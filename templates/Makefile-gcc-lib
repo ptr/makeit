@@ -1,13 +1,12 @@
-# -*- Makefile -*- Time-stamp: <03/07/09 18:08:47 ptr>
-# $Id$
+# -*- Makefile -*- Time-stamp: <2011-08-22 19:28:43 ptr>
 
-SRCROOT := ../..
+RULESBASE := ..
 COMPILER_NAME := gcc
 
 STLPORT_LIB_DIR = /export/home/ptr/STLport.lab/STLport/lib
 STLPORT_INCLUDE_DIR = /export/home/ptr/STLport.lab/STLport/stlport
-include Makefile.inc
-include ${SRCROOT}/Makefiles/top.mak
+include Makefile-lib.inc
+include ${RULESBASE}/Makefiles/top.mak
 
 
 INCLUDES += -I$(SRCROOT)/include -I$(STLPORT_INCLUDE_DIR)

@@ -1,5 +1,4 @@
-# -*- makefile -*- Time-stamp: <02/04/17 11:04:32 ptr>
-# $Id$
+# -*- makefile -*- Time-stamp: <2011-08-22 19:25:24 ptr>
 
 PRGNAME = prog
 SRC_CC = prog.cc
