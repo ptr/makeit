@@ -1,6 +1,6 @@
-# Time-stamp: <08/10/22 16:58:11 ptr>
+# -*- Makefile -*- Time-stamp: <2011-08-23 15:19:48 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006, 2008
+# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006, 2008, 2011
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -23,10 +23,10 @@ dbg-static-dep dbg-shared-dep:	$(DEP_DBG)
 ifndef WITHOUT_STLPORT
 stldbg-static-dep stldbg-shared-dep:	$(DEP_STLDBG)
 
-_ALL_DEP := $(DEP) $(DEP_DBG) $(DEP_STLDBG)
+_ALL_DEP := $(sort $(DEP) $(DEP_DBG) $(DEP_STLDBG))
 _DASH_DEP := release-shared-dep dbg-shared-dep stldbg-shared-dep
 else
-_ALL_DEP := $(DEP) $(DEP_DBG)
+_ALL_DEP := $(sort $(DEP) $(DEP_DBG))
 _DASH_DEP := release-shared-dep dbg-shared-dep
 endif
 

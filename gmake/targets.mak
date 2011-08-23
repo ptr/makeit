@@ -1,6 +1,6 @@
-# Time-stamp: <07/05/30 23:59:42 ptr>
+# -*- Makefile -*- Time-stamp: <2011-08-23 15:29:27 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006
+# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006, 2011
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -9,10 +9,15 @@
 # Licensed under the Academic Free License version 3.0
 #
 
+ifndef ALLBASE
+ALLBASE := $(basename $(notdir $(SRC_CC) $(SRC_CPP) $(SRC_CXX) $(SRC_C) $(SRC_S)))
+endif
+
 PRGS_DIR_SRC =
 define prog_
 PRGS_DIR_SRC += $$(dir $${$(1)_SRC_CPP} $${$(1)_SRC_CC} $${$(1)_SRC_CXX} $${$(1)_SRC_C} $${$(1)_SRC_S} )
 $(1)_ALLBASE := $$(basename $$(notdir $${$(1)_SRC_CC} $${$(1)_SRC_CPP} $${$(1)_SRC_CXX} $${$(1)_SRC_C} $${$(1)_SRC_S} ) )
+ALLBASE         += $${$(1)_ALLBASE}
 $(1)_ALLOBJS    := $$(addsuffix .o,$${$(1)_ALLBASE})
 $(1)_ALLDEPS    := $$(addsuffix .d,$${$(1)_ALLBASE})
 
@@ -122,7 +127,6 @@ endef
 
 $(foreach dir,$(DIRS_UNIQUE_SRC),$(eval $(call rules_,$(dir))))
 
-ALLBASE    := $(basename $(notdir $(SRC_CC) $(SRC_CPP) $(SRC_CXX) $(SRC_C) $(SRC_S)))
 ifeq (${OSNAME},windows)
 RCBASE    += $(basename $(notdir $(SRC_RC)))
 endif
@@ -167,3 +171,31 @@ OBJ_A_STLDBG := $(addprefix $(OUTPUT_DIR_A_STLDBG)/,$(ALLOBJS))
 DEP_A_STLDBG := $(addprefix $(OUTPUT_DIR_A_STLDBG)/,$(ALLDEPS))
 endif
 
+define pdf_
+${OUTPUT_DIR}/$(1).pdf:       $($(1)_SRC_TEX) $($(1)_MPS) $($(1)_EXTRA)
+	[ -d ${OUTPUT_DIR} ] || mkdir ${OUTPUT_DIR}
+	${COMPILE.latex} $$<
+	grep -q "^LaTeX Warning: There were undefined references." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && bibtex8 `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.aux|'` || true && ${COMPILE.latex} $$<
+	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $$< || true
+	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $$< || true
+endef
+
+$(foreach pdf,$(PDFNAMES),$(eval $(call pdf_,$(pdf))))
+
+define pdfdep_
+$(1)_ALLBASE := $$(basename $$(notdir $${$(1)_SRC_TEX} ) )
+$(1)_ALLDEPS := $$(addsuffix .d,$${$(1)_ALLBASE})
+$(1)_DEP     := $$(addprefix $$(OUTPUT_DIR)/,$${$(1)_ALLDEPS})
+ALLBASE      += $${$(1)_ALLBASE}
+
+${OUTPUT_DIR}/$(1).d:       $($(1)_SRC_TEX) $($(1)_MPS) $($(1)_EXTRA)
+	[ -d ${OUTPUT_DIR} ] || mkdir ${OUTPUT_DIR}
+	${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$<
+	grep -q "^LaTeX Warning: There were undefined references." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && bibtex8 `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.aux|'` || true && ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$<
+	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$< || true
+	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$< || true
+	[ -e $(1).fls ] && cat $(1).fls | sed -e '1 i $$< ${OUTPUT_DIR}/$(1).d:	  \\' -e '/^OUTPUT/ d' -e '/^PWD/ d' -e '/^INPUT.*\.aux$$$$/ d' -e '/^INPUT $$<$$$$/ d' -e '$$$$ s/^INPUT//' -e '$$$$! s/^INPUT//;s/$$$$/ \\/' | sed -e '$$$$ s/ \\$$$$//' > ${OUTPUT_DIR}/$(1).d
+	rm -f $(1).fls
+endef
+
+$(foreach pdf,$(PDFNAMES),$(eval $(call pdfdep_,$(pdf))))

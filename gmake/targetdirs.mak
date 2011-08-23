@@ -1,6 +1,6 @@
-# Time-stamp: <08/11/18 12:42:24 ptr>
+# -*- Makefile -*- Time-stamp: <2011-08-23 13:13:05 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2011
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -15,10 +15,22 @@ else
 TARGET_NAME :=
 endif
 
+ifndef BASE_OUTPUT_DIR
 BASE_OUTPUT_DIR        := obj
+endif
+
+ifndef PRE_OUTPUT_DIR
 PRE_OUTPUT_DIR         := $(BASE_OUTPUT_DIR)/$(TARGET_NAME)$(COMPILER_NAME)
+endif
+
+ifndef OUTPUT_DIR
 OUTPUT_DIR             := $(PRE_OUTPUT_DIR)/so$(EXTRA_DIRS)
+endif
+
+ifndef OUTPUT_DIR_DBG
 OUTPUT_DIR_DBG         := $(PRE_OUTPUT_DIR)/so_g$(EXTRA_DIRS)
+endif
+
 ifndef WITHOUT_STLPORT
 OUTPUT_DIR_STLDBG      := $(PRE_OUTPUT_DIR)/so_stlg$(EXTRA_DIRS)
 endif
