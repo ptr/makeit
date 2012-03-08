@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <2011-08-23 15:29:27 ptr>
+# -*- Makefile -*- Time-stamp: <2012-03-08 10:44:44 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005, 2006, 2011
 # Petr Ovtchenkov
@@ -12,6 +12,8 @@
 ifndef ALLBASE
 ALLBASE := $(basename $(notdir $(SRC_CC) $(SRC_CPP) $(SRC_CXX) $(SRC_C) $(SRC_S)))
 endif
+
+PRI_ALLBASE := $(ALLBASE)
 
 PRGS_DIR_SRC =
 define prog_
@@ -131,13 +133,17 @@ ifeq (${OSNAME},windows)
 RCBASE    += $(basename $(notdir $(SRC_RC)))
 endif
 
-ALLOBJS    := $(addsuffix .o,$(ALLBASE))
-ALLDEPS    := $(addsuffix .d,$(ALLBASE))
-ALLRESS    := $(addsuffix .res,$(RCBASE))
+ALLOBJS     := $(addsuffix .o,$(ALLBASE))
+PRI_ALLOBJS := $(addsuffix .o,$(PRI_ALLBASE))
+ALLDEPS     := $(addsuffix .d,$(ALLBASE))
+ALLRESS     := $(addsuffix .res,$(RCBASE))
 
-OBJ        := $(addprefix $(OUTPUT_DIR)/,$(ALLOBJS))
-OBJ_DBG    := $(addprefix $(OUTPUT_DIR_DBG)/,$(ALLOBJS))
-OBJ_STLDBG := $(addprefix $(OUTPUT_DIR_STLDBG)/,$(ALLOBJS))
+OBJ            := $(addprefix $(OUTPUT_DIR)/,$(ALLOBJS))
+PRI_OBJ        := $(addprefix $(OUTPUT_DIR)/,$(PRI_ALLOBJS))
+OBJ_DBG        := $(addprefix $(OUTPUT_DIR_DBG)/,$(ALLOBJS))
+PRI_OBJ_DBG    := $(addprefix $(OUTPUT_DIR_DBG)/,$(PRI_ALLOBJS))
+OBJ_STLDBG     := $(addprefix $(OUTPUT_DIR_STLDBG)/,$(ALLOBJS))
+PRI_OBJ_STLDBG := $(addprefix $(OUTPUT_DIR_STLDBG)/,$(PRI_ALLOBJS))
 
 DEP        := $(addprefix $(OUTPUT_DIR)/,$(ALLDEPS))
 DEP_DBG    := $(addprefix $(OUTPUT_DIR_DBG)/,$(ALLDEPS))
