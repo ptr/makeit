@@ -1,12 +1,19 @@
 % -*- LaTeX -*-
-% -*- coding: koi8-r -*-
+% -*- coding: utf8 -*-
 
 \documentclass[a4paper]{article}
+\usepackage[american]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{hyperref}
+
+\usepackage[style=numeric,backend=biber]{biblatex}
+\addbibresource{bibtest.bib}
 
 \begin{document}
 Some text here. See \cite{BNF}.
 
-\bibliographystyle{plain}
-\bibliography{bibtest}
+\printbibliography
 
 \end{document}

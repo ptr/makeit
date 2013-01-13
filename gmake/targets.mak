@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <2012-03-08 10:44:44 ptr>
+# -*- Makefile -*- Time-stamp: <2013-01-14 00:47:31 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006, 2011
+# Copyright (c) 1997-1999, 2002-2013
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -181,7 +181,7 @@ define pdf_
 ${OUTPUT_DIR}/$(1).pdf:       $($(1)_SRC_TEX) $($(1)_MPS) $($(1)_EXTRA)
 	[ -d ${OUTPUT_DIR} ] || mkdir ${OUTPUT_DIR}
 	${COMPILE.latex} $$<
-	grep -q "^LaTeX Warning: There were undefined references." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && bibtex8 `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.aux|'` || true && ${COMPILE.latex} $$<
+	grep -q "^LaTeX Warning: There were undefined references." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && biber --output_directory ${OUTPUT_DIR} `echo $$< | sed -e 's|\.tex$$$$|\.bcf|'` || true && ${COMPILE.latex} $$<
 	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $$< || true
 	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $$< || true
 endef
