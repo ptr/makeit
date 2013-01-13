@@ -1,4 +1,4 @@
-# -*- makefile -*- Time-stamp: <2012-03-08 10:46:34 ptr>
+# -*- makefile -*- Time-stamp: <2012-03-08 11:55:29 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2007
 # Petr Ovtchenkov
@@ -82,7 +82,7 @@ else
 ${PRG}:	$(PRI_OBJ) $(LIBSDEP)
 	$(LINK.c) $(LINK_OUTPUT_OPTION) $(PRI_OBJ) $(LDLIBS)
 
-${PRG_DBG}:	$(OBJ_DBG) $(LIBSDEP)
+${PRG_DBG}:	$(PRI_OBJ_DBG) $(LIBSDEP)
 	$(LINK.c) $(LINK_OUTPUT_OPTION) $(PRI_OBJ_DBG) $(LDLIBS)
 
 ifndef WITHOUT_STLPORT
