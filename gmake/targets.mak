@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <2013-01-26 08:59:45 ptr>
+# -*- Makefile -*- Time-stamp: <2013-02-06 07:19:06 ptr>
 #
 # Copyright (c) 1997-1999, 2002-2013
 # Petr Ovtchenkov
@@ -200,8 +200,9 @@ ${OUTPUT_DIR}/$(1).d:       $($(1)_SRC_TEX) $($(1)_MPS) $($(1)_EXTRA)
 	grep -q "^LaTeX Warning: There were undefined references." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && biber --output_directory ${OUTPUT_DIR} `echo $$< | sed -e 's|\.tex$$$$|\.bcf|'` || true && ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$<
 	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$< || true
 	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$< || true
-	[ -e $(1).fls ] && cat $(1).fls | sed -e '1 i $$< ${OUTPUT_DIR}/$(1).d:	  \\' -e '/^OUTPUT/ d' -e '/^PWD/ d' -e '/^INPUT.*\.aux$$$$/ d' -e '/^INPUT $$<$$$$/ d' -e '$$$$ s/^INPUT//' -e '$$$$! s/^INPUT//;s/$$$$/ \\/' | sed -e '$$$$ s/ \\$$$$//' > ${OUTPUT_DIR}/$(1).d
+	[ -e $(1).fls ] && cat $(1).fls | sed -e '1 i $$< ${OUTPUT_DIR}/$(1).d:	  \\' -e '/^OUTPUT/ d' -e '/^PWD/ d' -e '/^INPUT.*\.aux$$$$/ d' -e '/^INPUT $$<$$$$/ d' -e '$$$$ s/^INPUT//' -e '$$$$! s/^INPUT//;s/$$$$/ \\/' | sed -e '$$$$ s/ \\$$$$//' > ${OUTPUT_DIR}/$(1).d || true
 	rm -f $(1).fls
+	[ -e ${OUTPUT_DIR}/$(1).fls ] && cat ${OUTPUT_DIR}/$(1).fls | sed -e '1 i $$< ${OUTPUT_DIR}/$(1).d:	  \\' -e '/^OUTPUT/ d' -e '/^PWD/ d' -e '/^INPUT.*\.aux$$$$/ d' -e '/^INPUT $$<$$$$/ d' -e '$$$$ s/^INPUT//' -e '$$$$! s/^INPUT//;s/$$$$/ \\/' | sed -e '$$$$ s/ \\$$$$//' > ${OUTPUT_DIR}/$(1).d || true
 endef
 
 $(foreach pdf,$(PDFNAMES),$(eval $(call pdfdep_,$(pdf))))
