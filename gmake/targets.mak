@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <2013-02-06 07:19:06 ptr>
+# -*- Makefile -*- Time-stamp: <2013-02-06 22:23:01 ptr>
 #
 # Copyright (c) 1997-1999, 2002-2013
 # Petr Ovtchenkov
@@ -178,7 +178,7 @@ DEP_A_STLDBG := $(addprefix $(OUTPUT_DIR_A_STLDBG)/,$(ALLDEPS))
 endif
 
 define pdf_
-${OUTPUT_DIR}/$(1).pdf:       $($(1)_SRC_TEX) $($(1)_MPS) $($(1)_EXTRA)
+${OUTPUT_DIR}/$(basename $(notdir $(firstword $($(1)_SRC_TEX)))).pdf:       $($(1)_SRC_TEX) $($(1)_MPS) $($(1)_EXTRA)
 	[ -d ${OUTPUT_DIR} ] || mkdir ${OUTPUT_DIR}
 	${COMPILE.latex} $$<
 	grep -q "^LaTeX Warning: There were undefined references." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && biber --output_directory ${OUTPUT_DIR} `echo $$< | sed -e 's|\.tex$$$$|\.bcf|'` || true && ${COMPILE.latex} $$<
