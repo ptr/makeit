@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <2013-02-08 08:34:20 ptr>
+# -*- Makefile -*- Time-stamp: <2013-06-13 10:01:25 ptr>
 #
 # Copyright (c) 1997-1999, 2002-2013
 # Petr Ovtchenkov
@@ -64,42 +64,42 @@ DIRS_UNIQUE_SRC := $(sort $(DIRS_UNIQUE_SRC) $(PRGS_DIR_SRC))
 # The code below verbose, but this is price for compatibility with 3.80
 
 define rule_o
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.cc
+$$(OUTPUT_DIR$(1))/%.o:	$(2)%.cc | $$(OUTPUT_DIR$(1))
 	$$(COMPILE.cc) $$(OUTPUT_OPTION) $$<
 
-$$(OUTPUT_DIR$(1))/%.d:	$(2)%.cc
+$$(OUTPUT_DIR$(1))/%.d:	$(2)%.cc | $$(OUTPUT_DIR$(1))
 	@$$(COMPILE.cc) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
 
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.cpp
+$$(OUTPUT_DIR$(1))/%.o:	$(2)%.cpp | $$(OUTPUT_DIR$(1))
 	$$(COMPILE.cc) $$(OUTPUT_OPTION) $$<
 
-$$(OUTPUT_DIR$(1))/%.d:	$(2)%.cpp
+$$(OUTPUT_DIR$(1))/%.d:	$(2)%.cpp | $$(OUTPUT_DIR$(1))
 	@$$(COMPILE.cc) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
 
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.cxx
+$$(OUTPUT_DIR$(1))/%.o:	$(2)%.cxx | $$(OUTPUT_DIR$(1))
 	$$(COMPILE.cc) $$(OUTPUT_OPTION) $$<
 
-$$(OUTPUT_DIR$(1))/%.d:	$(2)%.cxx
+$$(OUTPUT_DIR$(1))/%.d:	$(2)%.cxx | $$(OUTPUT_DIR$(1))
 	@$$(COMPILE.cc) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
 
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.c
+$$(OUTPUT_DIR$(1))/%.o:	$(2)%.c | $$(OUTPUT_DIR$(1))
 	$$(COMPILE.c) $$(OUTPUT_OPTION) $$<
 
-$$(OUTPUT_DIR$(1))/%.d:	$(2)%.c
+$$(OUTPUT_DIR$(1))/%.d:	$(2)%.c | $$(OUTPUT_DIR$(1))
 	@$$(COMPILE.c) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
 
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.s
+$$(OUTPUT_DIR$(1))/%.o:	$(2)%.s | $$(OUTPUT_DIR$(1))
 	$$(COMPILE.s) $$(OUTPUT_OPTION) $$<
 
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.S
+$$(OUTPUT_DIR$(1))/%.o:	$(2)%.S | $$(OUTPUT_DIR$(1))
 	$$(COMPILE.S) $$(OUTPUT_OPTION) $$<
 
-$$(OUTPUT_DIR$(1))/%.d:	$(2)%.S
+$$(OUTPUT_DIR$(1))/%.d:	$(2)%.S | $$(OUTPUT_DIR$(1))
 	@$$(COMPILE.S) $$(SDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
 endef
 
 define rule_rc
-$$(OUTPUT_DIR$(1))/%.res:	$(2)%.rc
+$$(OUTPUT_DIR$(1))/%.res:	$(2)%.rc | $$(OUTPUT_DIR$(1))
 	$$(COMPILE.rc) $$(RC_OUTPUT_OPTION) $$<
 endef
 
@@ -194,8 +194,7 @@ $(1)_ALLDEPS := $$(addsuffix .d,$${$(1)_ALLBASE})
 $(1)_DEP     := $$(addprefix $$(OUTPUT_DIR)/,$${$(1)_ALLDEPS})
 ALLBASE      += $${$(1)_ALLBASE}
 
-${OUTPUT_DIR}/$(1).d:       $($(1)_SRC_TEX) $($(1)_MPS) $($(1)_EXTRA)
-	[ -d ${OUTPUT_DIR} ] || mkdir ${OUTPUT_DIR}
+${OUTPUT_DIR}/$(1).d:       $($(1)_SRC_TEX) $($(1)_MPS) $($(1)_EXTRA) | ${OUTPUT_DIR}
 	${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$<
 	grep -q "^LaTeX Warning: There were undefined references." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && biber --output_directory ${OUTPUT_DIR} `echo $$< | sed -e 's|\.tex$$$$|\.bcf|'` || true && ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$<
 	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$< || true

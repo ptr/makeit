@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <2011-08-23 13:13:05 ptr>
+# -*- Makefile -*- Time-stamp: <2013-06-13 10:10:19 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2011
 # Petr Ovtchenkov
@@ -88,8 +88,6 @@ INSTALL_LIB_DIRS := $(sort $(INSTALL_LIB_DIRS))
 INSTALL_BIN_DIRS := $(sort $(INSTALL_BIN_DIRS))
 INSTALL_DIRS := $(sort $(INSTALL_LIB_DIRS) $(INSTALL_BIN_DIRS))
 
-PHONY += $(OUTPUT_DIRS) $(INSTALL_DIRS) $(AUX_DIR)
-
 define createdirs
 @for d in $@ ; do \
   if [ -e $$d -a -f $$d ] ; then \
@@ -101,11 +99,15 @@ define createdirs
 done
 endef
 
+define create_install_dirs
+${INSTALL} -d -m 0755 $@
+endef
+
 $(OUTPUT_DIRS):
 	$(createdirs)
 
 $(INSTALL_DIRS):
-	$(createdirs)
+	$(create_install_dirs)
 
 $(AUX_DIR):
 	$(createdirs)

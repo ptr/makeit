@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <2011-08-23 15:19:48 ptr>
+# -*- Makefile -*- Time-stamp: <2013-06-13 10:19:22 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006, 2008, 2011
+# Copyright (c) 1997-1999, 2002-2013
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -31,14 +31,14 @@ _DASH_DEP := release-shared-dep dbg-shared-dep
 endif
 
 
-depend::	$(OUTPUT_DIRS) ${_DASH_DEP}
+depend::	${_DASH_DEP} | $(OUTPUT_DIRS)
 	@cat -s $(_ALL_DEP) /dev/null > $(DEPENDS_COLLECTION)
 
 ifneq ($(OSNAME),windows)
-TAGS:	$(OUTPUT_DIRS) ${_DASH_DEP}
+TAGS:	${_DASH_DEP} | $(OUTPUT_DIRS)
 	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort | uniq | xargs etags -I --declarations
 
-tags:	$(OUTPUT_DIRS) ${_DASH_DEP}
+tags:	${_DASH_DEP} | $(OUTPUT_DIRS)
 	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort | uniq | xargs ctags -d --globals --declarations -t -T 
 endif
 

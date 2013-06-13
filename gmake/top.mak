@@ -1,6 +1,6 @@
-# Time-stamp: <08/10/22 17:17:38 ptr>
+# Time-stamp: <2013-06-13 10:26:10 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2013
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -52,7 +52,7 @@ endif
 
 endif
 
-all:	$(OUTPUT_DIRS) $(ALL_TAGS)
+all:	$(ALL_TAGS)
 
 ifndef OSNAME
 # identify OS and build date

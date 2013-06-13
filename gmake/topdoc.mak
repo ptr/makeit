@@ -1,4 +1,4 @@
-# Time-stamp: <08/01/17 09:39:54 ptr>
+# Time-stamp: <2013-06-13 10:14:51 ptr>
 #
 # Copyright (c) 2007,2008
 # Petr Ovtchenkov
@@ -51,8 +51,6 @@ $(OUTPUT_DIRS):
 $(AUX_DIR):
 	$(createdirs)
 
-PHONY += $(OUTPUT_DIRS) $(AUX_DIR)
-
 ALLFIG =
 
 define dep_mp
@@ -69,11 +67,11 @@ endef
 
 define rule_mp
 TMP1 := $$(OUTPUT_DIR)/$$(basename $$(notdir $(1))).mp
-$$(TMP1):	$(OUTPUT_DIRS) $(1)
+$$(TMP1):	$(1) | $$(OUTPUT_DIR)
 	fig2dev -L mp $(1) $$@
 
 TMP2 := $$(OUTPUT_DIR)/$$(basename $$(notdir $(1))).0
-$$(TMP2):	$$(TMP1)
+$$(TMP2):	$$(TMP1) | $${OUTPUT_DIR}
 	(cd $${OUTPUT_DIR}; mpost `basename $$<`)
 
 TMP1 := $$(basename $$(notdir $(1))).mps
@@ -90,7 +88,7 @@ $(foreach mp,$(PDFNAMES),$(eval $(call dep_mps,$(mp))))
 
 define rule_mps
 TMP2 := $$(OUTPUT_DIR)/$$(basename $$(notdir $(1))).0
-$$(TMP2):	$(1)
+$$(TMP2):	$(1) | $$(OUTPUT_DIR)  
 	sed -i -e 's/beginfig(.)/beginfig(0)/' $$<
 	(cd $${OUTPUT_DIR}; mpost --tex=latex ../`basename $$<`)
 	rm -f $(1)x
