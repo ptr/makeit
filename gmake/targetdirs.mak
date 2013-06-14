@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <2013-06-13 10:10:19 ptr>
+# -*- Makefile -*- Time-stamp: <2013-06-14 23:53:41 ptr>
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2011
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2013
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -89,14 +89,12 @@ INSTALL_BIN_DIRS := $(sort $(INSTALL_BIN_DIRS))
 INSTALL_DIRS := $(sort $(INSTALL_LIB_DIRS) $(INSTALL_BIN_DIRS))
 
 define createdirs
-@for d in $@ ; do \
-  if [ -e $$d -a -f $$d ] ; then \
-    echo "ERROR: Regular file $$d present, directory instead expected" ; \
-    exit 1; \
-  elif [ ! -d $$d ] ; then \
-    mkdir -p $$d ; \
-  fi ; \
-done
+@if [ ! -e $@ ]; then \
+  mkdir -p $@ ; \
+elif [ -e $@ -a -f $@ ] ; then \
+  echo "ERROR: Regular file $$d present, directory instead expected" ; \
+  exit 1; \
+fi
 endef
 
 define create_install_dirs
@@ -104,7 +102,7 @@ ${INSTALL} -d -m 0755 $@
 endef
 
 $(OUTPUT_DIRS):
-	$(createdirs)
+	@mkdir -p $@
 
 $(INSTALL_DIRS):
 	$(create_install_dirs)
