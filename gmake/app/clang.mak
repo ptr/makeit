@@ -198,7 +198,6 @@ STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm -lsupc++ ${_LGCC_EH}
 endif
 
 ifeq ($(OSNAME),windows)
-LDFLAGS += -nodefaultlibs
 ifndef USE_STATIC_LIBGCC
 ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_s.a),libgcc_s.a)
 _LGCC_S := -lgcc
@@ -218,9 +217,6 @@ else
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lm -lc -lpthread -lkernel32
 endif
 endif
-else
-#LDFLAGS += -nostdlib
-LDFLAGS += -nodefaultlibs
 endif
 
 # _USE_NOSTDLIB

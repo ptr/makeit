@@ -224,7 +224,7 @@ STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lc -lm
 endif
 endif
 #END_A_OBJ := $(shell for o in crtn.o; do ${CXX} -print-file-name=$$o; done)
-NOSTDLIB := -nodefaultlibs
+NOSTDLIB := 
 ifeq ($(OSNAME),windows)
 
 ifndef USE_STATIC_LIBGCC
