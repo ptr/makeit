@@ -1,4 +1,4 @@
-# Time-stamp: <2013-06-13 10:26:10 ptr>
+# -*- Makefile -*- Time-stamp: <2013-06-15 00:03:40 ptr>
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2013
 # Petr Ovtchenkov
@@ -122,3 +122,12 @@ endif
 endif
 
 .PHONY: $(PHONY)
+
+ifdef DEBUG_RULES
+ORIGINAL_SHELL := ${SHELL}
+ifeq (${DEBUG_RULES},1)
+SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL}
+else
+SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL} -x
+endif
+endif
