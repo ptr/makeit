@@ -1,6 +1,6 @@
-# Time-stamp: <10/06/03 13:06:08 ptr>
+# -*- Makefile -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2010
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -21,14 +21,26 @@ else
 CC := ${_FORCE_CC}
 endif
 
+ifndef _FORCE_AS
+AS := as
+else
+AS := ${_FORCE_AS}
+endif
+
 ifeq ($(OSNAME), windows)
 RC := windres
 endif
 
 ifdef TARGET_OS
+ifndef _FORCE_CXX
 CXX := ${TARGET_OS}-${CXX}
+endif
+ifndef _FORCE_CC
 CC := ${TARGET_OS}-${CC}
+endif
+ifndef _FORCE_AS
 AS := ${TARGET_OS}-${AS}
+endif
 endif
 
 CXX_VERSION := $(shell ${CXX} -dumpversion)
@@ -97,38 +109,61 @@ CXXFLAGS = -pthreads  -fexceptions $(OPT)
 endif
 
 ifeq ($(OSNAME),linux)
+ifndef EXACT_OPTIONS
 CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
 CXXFLAGS = -pthread -fexceptions $(OPT)
+else
+CCFLAGS = $(OPT)
+CFLAGS = $(OPT)
+CXXFLAGS = $(OPT)
+endif
 endif
 
 ifeq ($(OSNAME),openbsd)
+ifndef EXACT_OPTIONS
 CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
 CXXFLAGS = -pthread -fexceptions $(OPT)
+else
+CCFLAGS = $(OPT)
+CFLAGS = $(OPT)
+CXXFLAGS = $(OPT)
+endif
 endif
 
 ifeq ($(OSNAME),freebsd)
+ifndef EXACT_OPTIONS
 CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
 DEFS += -D_REENTRANT
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
 CXXFLAGS = -pthread -fexceptions $(OPT)
+else
+CCFLAGS = $(OPT)
+CFLAGS = $(OPT)
+CXXFLAGS = $(OPT)
+endif
 endif
 
 ifeq ($(OSNAME),darwin)
 CCFLAGS = $(OPT)
 CFLAGS = $(OPT)
+ifndef EXACT_OPTIONS
 DEFS += -D_REENTRANT
 CXXFLAGS = -fexceptions $(OPT)
 release-shared : CXXFLAGS += -dynamic
 dbg-shared : CXXFLAGS += -dynamic
 stldbg-shared : CXXFLAGS += -dynamic
+else
+CXXFLAGS = $(OPT)
+endif
 endif
 
 ifeq ($(OSNAME),hp-ux)
+ifndef EXACT_OPTIONS
 ifneq ($(M_ARCH),ia64)
 release-static : OPT += -fno-reorder-blocks
 release-shared : OPT += -fno-reorder-blocks
@@ -137,6 +172,11 @@ CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
 CXXFLAGS = -pthread -fexceptions $(OPT)
+else
+CCFLAGS = $(OPT)
+CFLAGS = $(OPT)
+CXXFLAGS = $(OPT)
+endif
 endif
 
 #ifeq ($(CXX_VERSION_MAJOR),3)
@@ -171,11 +211,19 @@ endif
 #endif
 #endif
 
+ifndef EXACT_OPTIONS
 CXXFLAGS += -std=gnu++0x ${EXTRA_CXXFLAGS}
+else
+CXXFLAGS += ${EXTRA_CXXFLAGS}
+endif
 CFLAGS += ${EXTRA_CFLAGS}
 
 CDEPFLAGS = -E -M
 CCDEPFLAGS = -E -M
+SDEPFLAGS = -E -M
+SPPDEPFLAGS = -E -M
+
+COMPILE.spp = $(COMPILE.c) -x assembler-with-cpp
 
 # STLport DEBUG mode specific defines
 stldbg-static :	    DEFS += -D_STLP_DEBUG

@@ -1,6 +1,6 @@
-# -*- makefile -*- Time-stamp: <10/05/14 18:44:19 ptr>
+# -*- makefile -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2010
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -15,7 +15,9 @@
 # (really that more correct).
 
 ifneq ($(OSNAME), windows)
+ifndef EXACT_OPTIONS
 OPT += -fPIC
+endif
 endif
 
 ifndef NOT_USE_NOSTDLIB

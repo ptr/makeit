@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <2013-06-13 10:01:25 ptr>
+# -*- Makefile -*-
 #
-# Copyright (c) 1997-1999, 2002-2013
+# Copyright (c) 1997-1999, 2002-2014
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -10,15 +10,15 @@
 #
 
 ifndef ALLBASE
-ALLBASE := $(basename $(notdir $(SRC_CC) $(SRC_CPP) $(SRC_CXX) $(SRC_C) $(SRC_S)))
+ALLBASE := $(basename $(notdir $(SRC_CC) $(SRC_CPP) $(SRC_CXX) $(SRC_C) $(SRC_S) $(SRC_SPP)))
 endif
 
 PRI_ALLBASE := $(ALLBASE)
 
 PRGS_DIR_SRC =
 define prog_
-PRGS_DIR_SRC += $$(dir $${$(1)_SRC_CPP} $${$(1)_SRC_CC} $${$(1)_SRC_CXX} $${$(1)_SRC_C} $${$(1)_SRC_S} )
-$(1)_ALLBASE := $$(basename $$(notdir $${$(1)_SRC_CC} $${$(1)_SRC_CPP} $${$(1)_SRC_CXX} $${$(1)_SRC_C} $${$(1)_SRC_S} ) )
+PRGS_DIR_SRC += $$(dir $${$(1)_SRC_CPP} $${$(1)_SRC_CC} $${$(1)_SRC_CXX} $${$(1)_SRC_C} $${$(1)_SRC_S} $${$(1)_SRC_SPP} )
+$(1)_ALLBASE := $$(basename $$(notdir $${$(1)_SRC_CC} $${$(1)_SRC_CPP} $${$(1)_SRC_CXX} $${$(1)_SRC_C} $${$(1)_SRC_S} $${$(1)_SRC_SPP} ) )
 ALLBASE         += $${$(1)_ALLBASE}
 $(1)_ALLOBJS    := $$(addsuffix .o,$${$(1)_ALLBASE})
 $(1)_ALLDEPS    := $$(addsuffix .d,$${$(1)_ALLBASE})
@@ -52,7 +52,7 @@ endif
 
 # if sources disposed in several dirs, calculate appropriate rules
 
-DIRS_UNIQUE_SRC := $(dir $(SRC_CPP) $(SRC_CC) $(SRC_CXX) $(SRC_C) $(SRC_S) )
+DIRS_UNIQUE_SRC := $(dir $(SRC_CPP) $(SRC_CC) $(SRC_CXX) $(SRC_C) $(SRC_S) $(SRC_SPP) )
 ifeq (${OSNAME},windows)
 DIRS_UNIQUE_SRC := ${DIRS_UNIQUE_SRC} $(dir $(SRC_RC) )
 endif
@@ -96,6 +96,12 @@ $$(OUTPUT_DIR$(1))/%.o:	$(2)%.S | $$(OUTPUT_DIR$(1))
 
 $$(OUTPUT_DIR$(1))/%.d:	$(2)%.S | $$(OUTPUT_DIR$(1))
 	@$$(COMPILE.S) $$(SDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
+
+$$(OUTPUT_DIR$(1))/%.o:	$(2)%.spp | $$(OUTPUT_DIR$(1))
+	$$(COMPILE.spp) $$(OUTPUT_OPTION) $$<
+
+$$(OUTPUT_DIR$(1))/%.d:	$(2)%.spp | $$(OUTPUT_DIR$(1))
+	@$$(COMPILE.spp) $$(SPPDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
 endef
 
 define rule_rc
