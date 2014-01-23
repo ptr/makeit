@@ -1,6 +1,6 @@
-# Time-stamp: <2011-04-12 12:37:24 ptr>
+# -*- Makefile -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2011
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -10,8 +10,6 @@
 #
 
 INSTALL := $(shell if [ -e /usr/bin/install ]; then echo -n "/usr/bin/install"; else if [ -e /bin/install ]; then echo -n "/bin/install"; fi fi )
-
-STRIP := /usr/bin/strip
 
 install-strip:	_INSTALL_STRIP_OPTION = -s
 
