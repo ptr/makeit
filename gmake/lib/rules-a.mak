@@ -1,6 +1,6 @@
-# -*- makefile -*- Time-stamp: <07/03/08 21:34:05 ptr>
+# -*- Makefile -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -13,20 +13,24 @@
 
 PHONY += release-static dbg-static stldbg-static
 
-release-static: $(OUTPUT_DIR_A) ${A_NAME_OUT}
+release-static: $(EXTRA_PRE) ${A_NAME_OUT} $(EXTRA_POST)
 
-dbg-static:	$(OUTPUT_DIR_A_DBG) ${A_NAME_OUT_DBG}
+dbg-static:	$(EXTRA_PRE_DBG) ${A_NAME_OUT_DBG} $(EXTRA_POST_DBG)
 
-stldbg-static:	$(OUTPUT_DIR_A_STLDBG) ${A_NAME_OUT_STLDBG}
+ifndef WITHOUT_STLPORT
+stldbg-static:	$(EXTRA_PRE_STLDBG) ${A_NAME_OUT_STLDBG} $(EXTRA_POST_STLDBG)
+endif
 
-${A_NAME_OUT}:	$(OBJ_A)
+${A_NAME_OUT}:	$(OBJ_A) | ${OUTPUT_DIR_A}
 	rm -f $@
 	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A)
 
-${A_NAME_OUT_DBG}:	$(OBJ_A_DBG)
+${A_NAME_OUT_DBG}:	$(OBJ_A_DBG) | ${OUTPUT_DIR_A_DBG}
 	rm -f $@
 	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A_DBG)
 
-${A_NAME_OUT_STLDBG}:	$(OBJ_A_STLDBG)
+ifndef WITHOUT_STLPORT
+${A_NAME_OUT_STLDBG}:	$(OBJ_A_STLDBG) | ${OUTPUT_DIR_A_STLDBG}
 	rm -f $@
 	$(AR) $(AR_INS_R) $(AR_OUT) $(OBJ_A_STLDBG)
+endif
