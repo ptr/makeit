@@ -51,7 +51,7 @@ $${SO_NAME_OUT$(1)xxx}:	$$(OBJ$(1)) $$(LIBSDEP)
 ifeq ("${_C_SOURCES_ONLY}","")
 	$$(LINK.cc) $$(LINK_OUTPUT_OPTION) $${START_OBJ} $$(OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ}
 else
-	$$(LINK.c) $$(LINK_OUTPUT_OPTION) $$(OBJ$(1)) $$(LDLIBS)
+	$$(LINK.c) $$(LINK_OUTPUT_OPTION) $${START_OBJ} $$(OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ}
 endif
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${SO_NAME$(1)xx},$${SO_NAME$(1)xxx})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${SO_NAME$(1)x},$${SO_NAME$(1)xx})

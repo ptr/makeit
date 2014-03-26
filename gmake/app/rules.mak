@@ -39,6 +39,10 @@ endef
 endif
 endif
 
+define clnk_str
+$(LINK.c) $(LINK_OUTPUT_OPTION) ${START_OBJ} $(1) $(LDLIBS) ${STDLIBS} ${END_OBJ}
+endef
+
 define prog_lnk
 ifeq ($${_$(1)_C_SOURCES_ONLY},)
 $${$(1)_PRG}:	$$($(1)_OBJ) $$(LIBSDEP) | $${OUTPUT_DIR}
@@ -53,14 +57,14 @@ $${$(1)_PRG_STLDBG}:	$$($(1)_OBJ_STLDBG) $$(LIBSDEP) | $${OUTPUT_DIR_STLDBG}
 endif
 else
 $${$(1)_PRG}:	$$($(1)_OBJ) $$(LIBSDEP) | $${OUTPUT_DIR}
-	$$(LINK.c) $$(LINK_OUTPUT_OPTION) $$($(1)_OBJ) $$(LDLIBS)
+	$$(call clnk_str,$$($(1)_OBJ))
 
 $${$(1)_PRG_DBG}:	$$(OBJ_DBG) $$(LIBSDEP) | $${OUTPUT_DIR_DBG}
-	$$(LINK.c) $$(LINK_OUTPUT_OPTION) $$($(1)_OBJ_DBG) $$(LDLIBS)
+	$$(call clnk_str,$$($(1)_OBJ_DBG))
 
 ifndef WITHOUT_STLPORT
 $${$(1)_PRG_STLDBG}:	$$($(1)_OBJ_STLDBG) $$(LIBSDEP) | $${OUTPUT_DIR_STLDBG}
-	$$(LINK.c) $$(LINK_OUTPUT_OPTION) $$($(1)_OBJ_STLDBG) $$(LDLIBS)
+	$$(call clnk_str,$$($(1)_OBJ_STLDBG))
 endif
 endif
 endef
@@ -80,13 +84,13 @@ ${PRG_STLDBG}:	$(PRI_OBJ_STLDBG) $(LIBSDEP) | ${OUTPUT_DIR_STLDBG}
 endif
 else
 ${PRG}:	$(PRI_OBJ) $(LIBSDEP) | ${OUTPUT_DIR}
-	$(LINK.c) $(LINK_OUTPUT_OPTION) $(PRI_OBJ) $(LDLIBS)
+	$(call clnk_str,$(PRI_OBJ))
 
 ${PRG_DBG}:	$(PRI_OBJ_DBG) $(LIBSDEP) | ${OUTPUT_DIR_DBG}
-	$(LINK.c) $(LINK_OUTPUT_OPTION) $(PRI_OBJ_DBG) $(LDLIBS)
+	$(call clnk_str,$(PRI_OBJ_DBG))
 
 ifndef WITHOUT_STLPORT
 ${PRG_STLDBG}:	$(PRI_OBJ_STLDBG) $(LIBSDEP) | ${OUTPUT_DIR_STLDBG}
-	$(LINK.c) $(LINK_OUTPUT_OPTION) $(PRI_OBJ_STLDBG) $(LDLIBS)
+	$(call clnk_str,$(PRI_OBJ_STLDBG))
 endif
 endif
