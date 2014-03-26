@@ -14,33 +14,73 @@ SO := so
 ARCH := a
 
 ifndef _FORCE_STRIP
+ifdef TARGET_OS
+STRIP := ${TARGET_OS}-strip
+else
 STRIP := strip
+endif
 else
 STRIP := ${_FORCE_STRIP}
 endif
 
 ifndef _FORCE_LD
+ifdef TARGET_OS
+LD := ${TARGET_OS}-ld
+else
 LD := ld
+endif
 else
 LD := ${_FORCE_LD}
 endif
 
 ifndef _FORCE_AR
+ifdef TARGET_OS
+AR := ${TARGET_OS}-ar
+else
 AR := ar
+endif
 else
 AR := ${_FORCE_AR}
 endif
 
+ifndef _FORCE_NM
 ifdef TARGET_OS
-ifndef _FORCE_AR
-AR := ${TARGET_OS}-ar
+NM := ${TARGET_OS}-nm
+else
+NM := nm
 endif
-ifndef _FORCE_LD
-LD := ${TARGET_OS}-ld
+else
+NM := ${_FORCE_NM}
 endif
-ifndef _FORCE_STRIP
-STRIP := ${TARGET_OS}-strip
+
+ifndef _FORCE_OBJDUMP
+ifdef TARGET_OS
+OBJDUMP := ${TARGET_OS}-objdump
+else
+OBJDUMP := objdump
 endif
+else
+OBJDUMP := ${_FORCE_OBJDUMP}
+endif
+
+ifndef _FORCE_OBJCOPY
+ifdef TARGET_OS
+OBJCOPY := ${TARGET_OS}-objcopy
+else
+OBJCOPY := objcopy
+endif
+else
+OBJCOPY := ${_FORCE_OBJCOPY}
+endif
+
+ifndef _FORCE_READELF
+ifdef TARGET_OS
+READELF := ${TARGET_OS}-readelf
+else
+READELF := readelf
+endif
+else
+READELF := ${_FORCE_READELF}
 endif
 
 AR_INS_R := -rs
