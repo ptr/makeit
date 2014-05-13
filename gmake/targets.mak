@@ -144,28 +144,57 @@ endef
 $(foreach prg,$(PRGNAMES),$(eval $(call prog_,$(prg)_)))
 
 define pdf_
-${OUTPUT_DIR}/$(basename $(notdir $(firstword $($(1)_SRC_TEX)))).pdf:       $($(1)_SRC_TEX) $($(1)_MPS) $($(1)_EXTRA)
-	[ -d ${OUTPUT_DIR} ] || mkdir ${OUTPUT_DIR}
+OUTPUT_DIRS += ${OUTPUT_DIR}
+
+${OUTPUT_DIR}/$(basename $(notdir $(firstword $($(1)_SRC_TEX)))).pdf:       $($(1)_SRC_TEX) $($(1)_MPS) $($(1)_EXTRA) | ${OUTPUT_DIR}
 	${COMPILE.latex} $$<
-	grep -q "^LaTeX Warning: There were undefined references." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && biber --output_directory ${OUTPUT_DIR} `echo $$< | sed -e 's|\.tex$$$$|\.bcf|'` || true && ${COMPILE.latex} $$<
-	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $$< || true
-	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $$< || true
+	if grep -q "^LaTeX Warning: There were undefined references." ${OUTPUT_DIR}/$$(notdir $$(basename $$<)).log; then \
+	  biber --output_directory ${OUTPUT_DIR} $$(notdir $$(basename $$<)).bcf; \
+	  ${COMPILE.latex} $$<; \
+	fi
+	if grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." ${OUTPUT_DIR}/$$(notdir $$(basename $$<)).log; then \
+	  ${COMPILE.latex} $$<; \
+	  if grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." ${OUTPUT_DIR}/$$(notdir $$(basename $$<)).log; then \
+	    ${COMPILE.latex} $$<; \
+	  fi \
+	fi
 endef
 
 $(foreach pdf,$(PDFNAMES),$(eval $(call pdf_,$(pdf))))
 
 define pdfdep_
-$(1)_ALLBASE := $$(basename $$(notdir $${$(1)_SRC_TEX} ) )
-$(1)_ALLDEPS := $$(addsuffix .d,$${$(1)_ALLBASE})
-$(1)_DEP     := $$(addprefix $$(OUTPUT_DIR)/,$${$(1)_ALLDEPS})
-ALLBASE      += $${$(1)_ALLBASE}
+$(1)_DEP += ${OUTPUT_DIR}/$(1).d
 
 ${OUTPUT_DIR}/$(1).d:       $($(1)_SRC_TEX) $($(1)_MPS) $($(1)_EXTRA) | ${OUTPUT_DIR}
 	${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$<
-	grep -q "^LaTeX Warning: There were undefined references." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && biber --output_directory ${OUTPUT_DIR} `echo $$< | sed -e 's|\.tex$$$$|\.bcf|'` || true && ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$<
-	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$< || true
-	grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." `echo $$< | sed -e '1 s|^|${OUTPUT_DIR}/|' -e 's|\.tex$$$$|\.log|'` && ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$< || true
-	f=$(basename $(notdir $(firstword $($(1)_SRC_TEX)))).fls; if [ -e $$$$f ] ; then sort $$$$f ; rm -f $$$$f ; elif [ -e ${OUTPUT_DIR}/$$$$f ] ; then sort ${OUTPUT_DIR}/$$$$f ; else false; fi | uniq -u | sed -e '1 i $$< ${OUTPUT_DIR}/$(1).d:	  \\' -e '/^OUTPUT/ d' -e '/^PWD/ d' -e '/^INPUT.*\.aux$$$$/ d' -e '/^INPUT $$<$$$$/ d' -e '$$$$ s/^INPUT//' -e '$$$$! s/^INPUT//;s/$$$$/ \\/' | sed -e '$$$$ s/ \\$$$$//' > ${OUTPUT_DIR}/$(1).d
+	if grep -q "^LaTeX Warning: There were undefined references." ${OUTPUT_DIR}/$$(notdir $$(basename $$<)).log; then \
+	  biber --output_directory ${OUTPUT_DIR} $$(notdir $$(basename $$<)).bcf; \
+	  ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$<; \
+	fi
+	if grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." ${OUTPUT_DIR}/$$(notdir $$(basename $$<)).log; then \
+	  ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$<; \
+	  if grep -q "^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right." ${OUTPUT_DIR}/$$(notdir $$(basename $$<)).log; then \
+	    ${COMPILE.latex} $(PDFLATEXDEPFLAGS) $$<; \
+	  fi \
+	fi
+	BCF=${OUTPUT_DIR}/$$(notdir $$(basename $$<)).bcf; \
+	if [ -e $$$$BCF ]; then \
+	  SCR='$$$$ a\'; \
+	  SCR2=" $$$$BCF\\n\\n$$$$BCF:\\t$$$$(grep bcf:datasource $$$$BCF | sed -e 's|</.*>||' -e 's| *<.*>|  |')\\n\\tbiber --output_directory ${OUTPUT_DIR} $$(notdir $$(basename $$<)).bcf\\n\\t$${COMPILE.latex} $$<\\n\\tif grep -q \"^LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.\" ${OUTPUT_DIR}/$$(notdir $$(basename $$<)).log; then $${COMPILE.latex} $$<; fi"; \
+	else \
+	  SCR='$$$$ s/ \\$$$$//'; \
+	  SCR2=;\
+	fi; \
+	f=$(basename $(notdir $(firstword $($(1)_SRC_TEX)))).fls; \
+	if [ -e $$$$f ] ; then \
+	  sort -u $$$$f; \
+	  rm -f $$$$f; \
+	elif [ -e ${OUTPUT_DIR}/$$$$f ] ; then \
+	  sort -u ${OUTPUT_DIR}/$$$$f; \
+	else \
+	  false; \
+	fi | \
+	sed -e '1 i ${OUTPUT_DIR}/$(basename $(notdir $(firstword $($(1)_SRC_TEX)))).pdf ${OUTPUT_DIR}/$(1).d:	  \\' -e '/^OUTPUT/ d' -e '/^PWD/ d' -e '/^INPUT.*\.aux$$$$/ d' -e '$$$$ s/^INPUT//' -e '$$$$! s/^INPUT//;s/$$$$/ \\/' | sed -e "$$$$SCR" -e "$$$$SCR2" > $$@
 endef
 
 $(foreach pdf,$(PDFNAMES),$(eval $(call pdfdep_,$(pdf))))

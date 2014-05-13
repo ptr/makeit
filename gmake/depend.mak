@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <2013-06-13 10:19:22 ptr>
+# -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002-2013
+# Copyright (c) 1997-1999, 2002-2014
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -20,25 +20,38 @@ release-static-dep release-shared-dep:	$(DEP)
 
 dbg-static-dep dbg-shared-dep:	$(DEP_DBG)
 
+#ifndef WITHOUT_STLPORT
+#stldbg-static-dep stldbg-shared-dep:	$(DEP_STLDBG)
+#
+#_ALL_DEP := $(sort $(DEP) $(DEP_DBG) $(DEP_STLDBG))
+#_DASH_DEP := release-shared-dep dbg-shared-dep stldbg-shared-dep
+#else
+#_ALL_DEP := $(sort $(DEP) $(DEP_DBG))
+#_DASH_DEP := release-shared-dep dbg-shared-dep
+#endif
+
+define prgdep_
+_ALL_DEP += $$($(1)DEP) $$($(1)DEP_DBG)
 ifndef WITHOUT_STLPORT
-stldbg-static-dep stldbg-shared-dep:	$(DEP_STLDBG)
-
-_ALL_DEP := $(sort $(DEP) $(DEP_DBG) $(DEP_STLDBG))
-_DASH_DEP := release-shared-dep dbg-shared-dep stldbg-shared-dep
-else
-_ALL_DEP := $(sort $(DEP) $(DEP_DBG))
-_DASH_DEP := release-shared-dep dbg-shared-dep
+_ALL_DEP += $$($(1)DEP_STLDBG)
 endif
+endef
 
+$(if $(PRGNAME),$(eval $(call prgdep_,)))
+$(if $(LIBNAME),$(eval $(call prgdep_,)))
+# $(if $(PDFNAME),$(eval $(call prgdep_,)))
+$(foreach n,$(PRGNAMES) $(LIBNAMES) $(PDFNAMES),$(eval $(call prgdep_,$(n)_)))
 
-depend::	${_DASH_DEP} | $(OUTPUT_DIRS)
-	@cat -s $(_ALL_DEP) /dev/null > $(DEPENDS_COLLECTION)
+OUTPUT_DIRS += $(dir $(DEPENDS_COLLECTION))
+
+depend::	${_ALL_DEP} | $(dir $(DEPENDS_COLLECTION))
+	cat -s $(_ALL_DEP) /dev/null > $(DEPENDS_COLLECTION)
 
 ifneq ($(OSNAME),windows)
-TAGS:	${_DASH_DEP} | $(OUTPUT_DIRS)
+TAGS:	${_ALL_DEP}
 	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort | uniq | xargs etags -I --declarations
 
-tags:	${_DASH_DEP} | $(OUTPUT_DIRS)
+tags:	${_ALL_DEP}
 	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort | uniq | xargs ctags -d --globals --declarations -t -T 
 endif
 

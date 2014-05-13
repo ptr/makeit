@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <2011-08-23 14:12:22 ptr>
+# -*- makefile-gmake -*-
 #
-# Copyright (c) 2007-2011
+# Copyright (c) 2007-2014
 # Petr Ovtchenkov
 #
 # Licensed under the Academic Free License version 3.0
@@ -60,3 +60,18 @@ include ${RULESBASE}/gmake/depend.mak
 
 .PHONY: $(PHONY)
 
+ifdef DEBUG_RULES
+ORIGINAL_SHELL := ${SHELL}
+ifeq (${DEBUG_RULES},1)
+SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL}
+else
+SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL} -x
+endif
+endif
+
+OUTPUT_DIRS := $(sort $(OUTPUT_DIRS))
+
+ifneq ($(OUTPUT_DIRS),)
+$(OUTPUT_DIRS):
+	@mkdir -p $@
+endif
