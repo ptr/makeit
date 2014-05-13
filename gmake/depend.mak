@@ -16,19 +16,16 @@ ifndef WITHOUT_STLPORT
 PHONY += stldbg-static-dep stldbg-shared-dep
 endif
 
-release-static-dep release-shared-dep:	$(DEP)
+release-static-dep release-shared-dep:	$(DEP) | $(dir $(DEPENDS_COLLECTION))
+	cat -s $(DEP) /dev/null > $(DEPENDS_COLLECTION)
 
-dbg-static-dep dbg-shared-dep:	$(DEP_DBG)
+dbg-static-dep dbg-shared-dep:	$(DEP_DBG) | $(dir $(DEPENDS_COLLECTION))
+	cat -s $(DEP_DBG) /dev/null > $(DEPENDS_COLLECTION)
 
-#ifndef WITHOUT_STLPORT
-#stldbg-static-dep stldbg-shared-dep:	$(DEP_STLDBG)
-#
-#_ALL_DEP := $(sort $(DEP) $(DEP_DBG) $(DEP_STLDBG))
-#_DASH_DEP := release-shared-dep dbg-shared-dep stldbg-shared-dep
-#else
-#_ALL_DEP := $(sort $(DEP) $(DEP_DBG))
-#_DASH_DEP := release-shared-dep dbg-shared-dep
-#endif
+ifndef WITHOUT_STLPORT
+stldbg-static-dep stldbg-shared-dep:	$(DEP_STLDBG) | $(dir $(DEPENDS_COLLECTION))
+	cat -s $(DEP_STLDBG) /dev/null > $(DEPENDS_COLLECTION)
+endif
 
 define prgdep_
 _ALL_DEP += $$($(1)DEP) $$($(1)DEP_DBG)
@@ -45,14 +42,14 @@ $(foreach n,$(PRGNAMES) $(LIBNAMES) $(PDFNAMES),$(eval $(call prgdep_,$(n)_)))
 OUTPUT_DIRS += $(dir $(DEPENDS_COLLECTION))
 
 depend::	${_ALL_DEP} | $(dir $(DEPENDS_COLLECTION))
-	cat -s $(_ALL_DEP) /dev/null > $(DEPENDS_COLLECTION)
+	@cat -s $(_ALL_DEP) /dev/null > $(DEPENDS_COLLECTION)
 
 ifneq ($(OSNAME),windows)
 TAGS:	${_ALL_DEP}
-	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort | uniq | xargs etags -I --declarations
+	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort -u | xargs etags -I --declarations
 
 tags:	${_ALL_DEP}
-	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort | uniq | xargs ctags -d --globals --declarations -t -T 
+	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort -u | xargs ctags --tag-relative=yes
 endif
 
 -include $(DEPENDS_COLLECTION)
