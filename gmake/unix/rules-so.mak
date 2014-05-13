@@ -1,6 +1,6 @@
-# -*- makefile -*- Time-stamp: <06/12/12 09:43:02 ptr>
+# -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -13,12 +13,12 @@
 
 PHONY += release-shared dbg-shared stldbg-shared
 
-release-shared:	$(EXTRA_PRE) $(OUTPUT_DIR) ${SO_NAME_OUTxxx} $(EXTRA_POST)
+release-shared:	$(EXTRA_PRE) ${SO_NAME_OUTxxx} $(EXTRA_POST)
 
-dbg-shared:	$(EXTRA_PRE_DBG) $(OUTPUT_DIR_DBG) ${SO_NAME_OUT_DBGxxx} $(EXTRA_POST_DBG)
+dbg-shared:	$(EXTRA_PRE_DBG) ${SO_NAME_OUT_DBGxxx} $(EXTRA_POST_DBG)
 
 ifndef WITHOUT_STLPORT
-stldbg-shared:	$(EXTRA_PRE_STLDBG) $(OUTPUT_DIR_STLDBG) ${SO_NAME_OUT_STLDBGxxx} $(EXTRA_POST_STLDBG)
+stldbg-shared:	$(EXTRA_PRE_STLDBG) ${SO_NAME_OUT_STLDBGxxx} $(EXTRA_POST_STLDBG)
 endif
 
 define do_so_links_1
@@ -47,7 +47,7 @@ endef
 # The GNU make 3.81 free from this problem, but it new...
 
 define do_so_links
-$${SO_NAME_OUT$(1)xxx}:	$$(OBJ$(1)) $$(LIBSDEP)
+$${SO_NAME_OUT$(1)xxx}:	$$(OBJ$(1)) $$(LIBSDEP) | $$(OUTPUT_DIR$(1))
 ifeq ("${_C_SOURCES_ONLY}","")
 	$$(LINK.cc) $$(LINK_OUTPUT_OPTION) $${START_OBJ} $$(OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ}
 else

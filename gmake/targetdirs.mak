@@ -67,11 +67,11 @@ endif
 INSTALL_HDR_DIR        ?= ${BASE_INSTALL_DIR}/include
 
 ifndef WITHOUT_STLPORT
-OUTPUT_DIRS := $(OUTPUT_DIR) $(OUTPUT_DIR_DBG) $(OUTPUT_DIR_STLDBG) \
-               $(OUTPUT_DIR_A) $(OUTPUT_DIR_A_DBG) $(OUTPUT_DIR_A_STLDBG)
+#OUTPUT_DIRS := $(OUTPUT_DIR) $(OUTPUT_DIR_DBG) $(OUTPUT_DIR_STLDBG) \
+#               $(OUTPUT_DIR_A) $(OUTPUT_DIR_A_DBG) $(OUTPUT_DIR_A_STLDBG)
 else
-OUTPUT_DIRS := $(OUTPUT_DIR) $(OUTPUT_DIR_DBG) \
-               $(OUTPUT_DIR_A) $(OUTPUT_DIR_A_DBG)
+#OUTPUT_DIRS := $(OUTPUT_DIR) $(OUTPUT_DIR_DBG) \
+#               $(OUTPUT_DIR_A) $(OUTPUT_DIR_A_DBG)
 endif
 
 ifndef WITHOUT_STLPORT
@@ -83,7 +83,7 @@ INSTALL_BIN_DIRS := $(INSTALL_BIN_DIR) $(INSTALL_BIN_DIR_DBG)
 endif
 
 # sort will remove duplicates:
-OUTPUT_DIRS := $(sort $(OUTPUT_DIRS))
+#OUTPUT_DIRS := $(sort $(OUTPUT_DIRS))
 INSTALL_LIB_DIRS := $(sort $(INSTALL_LIB_DIRS))
 INSTALL_BIN_DIRS := $(sort $(INSTALL_BIN_DIRS))
 INSTALL_DIRS := $(sort $(INSTALL_LIB_DIRS) $(INSTALL_BIN_DIRS))
@@ -101,8 +101,8 @@ define create_install_dirs
 ${INSTALL} -d -m 0755 $@
 endef
 
-$(OUTPUT_DIRS):
-	@mkdir -p $@
+#$(OUTPUT_DIRS):
+#	@mkdir -p $@
 
 $(INSTALL_DIRS):
 	$(create_install_dirs)

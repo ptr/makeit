@@ -72,25 +72,25 @@ endef
 $(foreach prg,$(PRGNAMES),$(eval $(call prog_lnk,$(prg))))
 
 ifeq ("${_C_SOURCES_ONLY}","")
-${PRG}:	$(PRI_OBJ) $(LIBSDEP) | ${OUTPUT_DIR}
-	$(call cpplnk_str,$(PRI_OBJ))
+${PRG}:	$(OBJ) $(LIBSDEP) | ${OUTPUT_DIR}
+	$(call cpplnk_str,$(OBJ))
 
-${PRG_DBG}:	$(PRI_OBJ_DBG) $(LIBSDEP) | ${OUTPUT_DIR_DBG}
-	$(call cpplnk_str,$(PRI_OBJ_DBG))
+${PRG_DBG}:	$(OBJ_DBG) $(LIBSDEP) | ${OUTPUT_DIR_DBG}
+	$(call cpplnk_str,$(OBJ_DBG))
 
 ifndef WITHOUT_STLPORT
-${PRG_STLDBG}:	$(PRI_OBJ_STLDBG) $(LIBSDEP) | ${OUTPUT_DIR_STLDBG}
-	$(call cpplnk_str,$(PRI_OBJ_STLDBG))
+${PRG_STLDBG}:	$(OBJ_STLDBG) $(LIBSDEP) | ${OUTPUT_DIR_STLDBG}
+	$(call cpplnk_str,$(OBJ_STLDBG))
 endif
 else
-${PRG}:	$(PRI_OBJ) $(LIBSDEP) | ${OUTPUT_DIR}
-	$(call clnk_str,$(PRI_OBJ))
+${PRG}:	$(OBJ) $(LIBSDEP) | ${OUTPUT_DIR}
+	$(call clnk_str,$(OBJ))
 
-${PRG_DBG}:	$(PRI_OBJ_DBG) $(LIBSDEP) | ${OUTPUT_DIR_DBG}
-	$(call clnk_str,$(PRI_OBJ_DBG))
+${PRG_DBG}:	$(OBJ_DBG) $(LIBSDEP) | ${OUTPUT_DIR_DBG}
+	$(call clnk_str,$(OBJ_DBG))
 
 ifndef WITHOUT_STLPORT
-${PRG_STLDBG}:	$(PRI_OBJ_STLDBG) $(LIBSDEP) | ${OUTPUT_DIR_STLDBG}
-	$(call clnk_str,$(PRI_OBJ_STLDBG))
+${PRG_STLDBG}:	$(OBJ_STLDBG) $(LIBSDEP) | ${OUTPUT_DIR_STLDBG}
+	$(call clnk_str,$(OBJ_STLDBG))
 endif
 endif

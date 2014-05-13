@@ -1,4 +1,4 @@
-# -*- Makefile -*-
+# -*- makefile-gmake -*-
 #
 # Copyright (c) 1997-1999, 2002-2014
 # Petr Ovtchenkov
@@ -9,40 +9,75 @@
 # Licensed under the Academic Free License version 3.0
 #
 
-ifndef ALLBASE
-ALLBASE := $(basename $(notdir $(SRC_CC) $(SRC_CPP) $(SRC_CXX) $(SRC_C) $(SRC_S) $(SRC_SPP)))
-endif
 
-PRI_ALLBASE := $(ALLBASE)
+# generator of rules like
+#
+# obj/gcc/so/test.o:	test.cc | obj/gcc/so
+# 	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+#
+# For source not from current dir (i.e. src/test.cc) generated rule will be like
+#
+# obj/gcc/so/ebc28af801846844e4024f299405a1c4/test.o:	src/test.cc | obj/gcc/so/ebc28af801846844e4024f299405a1c4
+# 	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+# 
+# The hash string is MD5 hash from "src/" (directory of source file)
+# The usage is like:
+#
+# $(call derive_rule,$(OUTPUT_DIR),test.cc,.o,$$(COMPILE.cc) $$(OUTPUT_OPTION) $$<)
+#
 
-PRGS_DIR_SRC =
-define prog_
-PRGS_DIR_SRC += $$(dir $${$(1)_SRC_CPP} $${$(1)_SRC_CC} $${$(1)_SRC_CXX} $${$(1)_SRC_C} $${$(1)_SRC_S} $${$(1)_SRC_SPP} )
-$(1)_ALLBASE := $$(basename $$(notdir $${$(1)_SRC_CC} $${$(1)_SRC_CPP} $${$(1)_SRC_CXX} $${$(1)_SRC_C} $${$(1)_SRC_S} $${$(1)_SRC_SPP} ) )
-ALLBASE         += $${$(1)_ALLBASE}
-$(1)_ALLOBJS    := $$(addsuffix .o,$${$(1)_ALLBASE})
-$(1)_ALLDEPS    := $$(addsuffix .d,$${$(1)_ALLBASE})
+define derive_rule
+OUTPUT_DIRS += $(1)
+$(5) += $(1)$(basename $(notdir $(2)))$(3)
 
-$(1)_OBJ        := $$(addprefix $$(OUTPUT_DIR)/,$${$(1)_ALLOBJS})
-$(1)_OBJ_DBG    := $$(addprefix $$(OUTPUT_DIR_DBG)/,$${$(1)_ALLOBJS})
-$(1)_OBJ_STLDBG := $$(addprefix $$(OUTPUT_DIR_STLDBG)/,$${$(1)_ALLOBJS})
-
-$(1)_DEP        := $$(addprefix $$(OUTPUT_DIR)/,$${$(1)_ALLDEPS})
-$(1)_DEP_DBG    := $$(addprefix $$(OUTPUT_DIR_DBG)/,$${$(1)_ALLDEPS})
-$(1)_DEP_STLDBG := $$(addprefix $$(OUTPUT_DIR_STLDBG)/,$${$(1)_ALLDEPS})
-
-$(1)_RES        := $$(addprefix $$(OUTPUT_DIR)/,$${$(1)_ALLRESS})
-$(1)_RES_DBG    := $$(addprefix $$(OUTPUT_DIR_DBG)/,$${$(1)_ALLRESS})
-$(1)_RES_STLDBG := $$(addprefix $$(OUTPUT_DIR_STLDBG)/,$${$(1)_ALLRESS})
-
-ifeq ("$$(sort $${$(1)_SRC_CC} $${$(1)_SRC_CPP} $${$(1)_SRC_CXX})","")
-$(1)_NOT_USE_NOSTDLIB := 1
-_$(1)_C_SOURCES_ONLY := true
-endif
-
+$(1)$(basename $(notdir $(2)))$(3):	$(2) | $(1); $(4)
 endef
 
-$(foreach prg,$(PRGNAMES),$(eval $(call prog_,$(prg))))
+# C++
+
+$(foreach f,$(SRC_CC) $(SRC_CPP) $(SRC_CXX),$(eval $(call derive_rule,$(if $(OUTPUT_DIR),$(OUTPUT_DIR)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.o,$$(COMPILE.cc) $$(OUTPUT_OPTION) $$<,OBJ)))
+$(foreach f,$(SRC_CC) $(SRC_CPP) $(SRC_CXX),$(eval $(call derive_rule,$(if $(OUTPUT_DIR),$(OUTPUT_DIR)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.d,$$(COMPILE.cc) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR),DEP)))
+
+$(foreach f,$(SRC_CC) $(SRC_CPP) $(SRC_CXX),$(eval $(call derive_rule,$(if $(OUTPUT_DIR_DBG),$(OUTPUT_DIR_DBG)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.o,$$(COMPILE.cc) $$(OUTPUT_OPTION) $$<,OBJ_DBG)))
+$(foreach f,$(SRC_CC) $(SRC_CPP) $(SRC_CXX),$(eval $(call derive_rule,$(if $(OUTPUT_DIR_DBG),$(OUTPUT_DIR_DBG)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.d,@$$(COMPILE.cc) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR),DEP_DBG)))
+
+ifndef WITHOUT_STLPORT
+$(foreach f,$(SRC_CC) $(SRC_CPP) $(SRC_CXX),$(eval $(call derive_rule,$(if $(OUTPUT_DIR_STLDBG),$(OUTPUT_DIR_STLDBG)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.o,$$(COMPILE.cc) $$(OUTPUT_OPTION) $$<,OBJ_STLDBG)))
+$(foreach f,$(SRC_CC) $(SRC_CPP) $(SRC_CXX),$(eval $(call derive_rule,$(if $(OUTPUT_DIR_STLDBG),$(OUTPUT_DIR_STLDBG)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.d,@$$(COMPILE.cc) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR),DEP_STLDBG)))
+endif
+
+# C
+
+$(foreach f,$(SRC_C),$(eval $(call derive_rule,$(if $(OUTPUT_DIR),$(OUTPUT_DIR)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.o,$$(COMPILE.c) $$(OUTPUT_OPTION) $$<,OBJ)))
+$(foreach f,$(SRC_C),$(eval $(call derive_rule,$(if $(OUTPUT_DIR),$(OUTPUT_DIR)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.d,@$$(COMPILE.c) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR),DEP)))
+
+$(foreach f,$(SRC_C),$(eval $(call derive_rule,$(if $(OUTPUT_DIR_DBG),$(OUTPUT_DIR_DBG)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.o,$$(COMPILE.c) $$(OUTPUT_OPTION) $$<,OBJ_DBG)))
+$(foreach f,$(SRC_C),$(eval $(call derive_rule,$(if $(OUTPUT_DIR_DBG),$(OUTPUT_DIR_DBG)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.d,@$$(COMPILE.c) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR),DEP_DBG)))
+
+# S
+
+$(foreach f,$(SRC_S),$(eval $(call derive_rule,$(if $(OUTPUT_DIR),$(OUTPUT_DIR)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.o,$$(COMPILE.S) $$(OUTPUT_OPTION) $$<,OBJ)))
+$(foreach f,$(SRC_S),$(eval $(call derive_rule,$(if $(OUTPUT_DIR),$(OUTPUT_DIR)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.d,@$$(COMPILE.S) $$(SDEPFLAGS) $$< $$(DP_OUTPUT_DIR),DEP)))
+
+$(foreach f,$(SRC_S),$(eval $(call derive_rule,$(if $(OUTPUT_DIR_DBG),$(OUTPUT_DIR_DBG)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.o,$$(COMPILE.S) $$(OUTPUT_OPTION) $$<,OBJ_DBG)))
+$(foreach f,$(SRC_S),$(eval $(call derive_rule,$(if $(OUTPUT_DIR_DBG),$(OUTPUT_DIR_DBG)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.d,@$$(COMPILE.S) $$(SDEPFLAGS) $$< $$(DP_OUTPUT_DIR),DEP_DBG)))
+
+# spp
+
+$(foreach f,$(SRC_SPP),$(eval $(call derive_rule,$(if $(OUTPUT_DIR),$(OUTPUT_DIR)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.o,$$(COMPILE.spp) $$(OUTPUT_OPTION) $$<,OBJ)))
+$(foreach f,$(SRC_SPP),$(eval $(call derive_rule,$(if $(OUTPUT_DIR),$(OUTPUT_DIR)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.d,@$$(COMPILE.spp) $$(SPPDEPFLAGS) $$< $$(DP_OUTPUT_DIR),DEP)))
+
+$(foreach f,$(SRC_SPP),$(eval $(call derive_rule,$(if $(OUTPUT_DIR_DBG),$(OUTPUT_DIR_DBG)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.o,$$(COMPILE.spp) $$(OUTPUT_OPTION) $$<,OBJ_DBG)))
+$(foreach f,$(SRC_SPP),$(eval $(call derive_rule,$(if $(OUTPUT_DIR_DBG),$(OUTPUT_DIR_DBG)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.d,@$$(COMPILE.spp) $$(SPPDEPFLAGS) $$< $$(DP_OUTPUT_DIR),DEP_DBG)))
+
+ifeq ($(OSNAME),windows)
+# rc
+$(foreach f,$(SRC_RC),$(eval $(call derive_rule,$(if $(OUTPUT_DIR),$(OUTPUT_DIR)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.res,$$(COMPILE.rc) $$(RC_OUTPUT_OPTION) $$<,RES)))
+$(foreach f,$(SRC_RC),$(eval $(call derive_rule,$(if $(OUTPUT_DIR_DBG),$(OUTPUT_DIR_DBG)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.res,$$(COMPILE.rc) $$(RC_OUTPUT_OPTION) $$<,RES_DBG)))
+ifndef WITHOUT_STLPORT
+$(foreach f,$(SRC_RC),$(eval $(call derive_rule,$(if $(OUTPUT_DIR_STLDBG),$(OUTPUT_DIR_STLDBG)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.res,$$(COMPILE.rc) $$(RC_OUTPUT_OPTION) $$<,RES_STLDBG)))
+endif
+endif
 
 # If we have no C++ sources, let's use C compiler for linkage instead of C++.
 ifeq ("$(sort ${SRC_CC} ${SRC_CPP} ${SRC_CXX})","")
@@ -50,138 +85,63 @@ NOT_USE_NOSTDLIB := 1
 _C_SOURCES_ONLY := true
 endif
 
-# if sources disposed in several dirs, calculate appropriate rules
+# Rules defined in prog_ is similar to set above.
+# Indeed it is enough only prog_ (call it with empty argument for
+# common rules), but syntax is messy due to escape for dollars
 
-DIRS_UNIQUE_SRC := $(dir $(SRC_CPP) $(SRC_CC) $(SRC_CXX) $(SRC_C) $(SRC_S) $(SRC_SPP) )
-ifeq (${OSNAME},windows)
-DIRS_UNIQUE_SRC := ${DIRS_UNIQUE_SRC} $(dir $(SRC_RC) )
-endif
-DIRS_UNIQUE_SRC := $(sort $(DIRS_UNIQUE_SRC) $(PRGS_DIR_SRC))
+define prog_
+$$(foreach f,$$($(1)SRC_CC) $$($(1)SRC_CPP) $$($(1)SRC_CXX),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR),$$(OUTPUT_DIR)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.o,$$$$(COMPILE.cc) $$$$(OUTPUT_OPTION) $$$$<,$(1)OBJ)))
+$$(foreach f,$$($(1)SRC_CC) $$($(1)SRC_CPP) $$($(1)SRC_CXX),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR),$$(OUTPUT_DIR)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.d,@$$$$(COMPILE.cc) $$$$(CCDEPFLAGS) $$$$< $$$$(DP_OUTPUT_DIR),$(1)DEP)))
 
-# The rules below may be even simpler (i.e. define macro that generate
-# rules for COMPILE.xx), but this GNU make 3.80 unhappy with it;
-# GNU make 3.81 work fine, but 3.81 is new...
-# The code below verbose, but this is price for compatibility with 3.80
+$$(foreach f,$$($(1)SRC_CC) $$($(1)SRC_CPP) $$($(1)SRC_CXX),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR_DBG),$$(OUTPUT_DIR_DBG)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.o,$$$$(COMPILE.cc) $$$$(OUTPUT_OPTION) $$$$<,$(1)OBJ_DBG)))
+$$(foreach f,$$($(1)SRC_CC) $$($(1)SRC_CPP) $$($(1)SRC_CXX),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR_DBG),$$(OUTPUT_DIR_DBG)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.d,@$$$$(COMPILE.cc) $$$$(CCDEPFLAGS) $$$$< $$$$(DP_OUTPUT_DIR),$(1)DEP_DBG)))
 
-define rule_o
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.cc | $$(OUTPUT_DIR$(1))
-	$$(COMPILE.cc) $$(OUTPUT_OPTION) $$<
-
-$$(OUTPUT_DIR$(1))/%.d:	$(2)%.cc | $$(OUTPUT_DIR$(1))
-	@$$(COMPILE.cc) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
-
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.cpp | $$(OUTPUT_DIR$(1))
-	$$(COMPILE.cc) $$(OUTPUT_OPTION) $$<
-
-$$(OUTPUT_DIR$(1))/%.d:	$(2)%.cpp | $$(OUTPUT_DIR$(1))
-	@$$(COMPILE.cc) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
-
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.cxx | $$(OUTPUT_DIR$(1))
-	$$(COMPILE.cc) $$(OUTPUT_OPTION) $$<
-
-$$(OUTPUT_DIR$(1))/%.d:	$(2)%.cxx | $$(OUTPUT_DIR$(1))
-	@$$(COMPILE.cc) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
-
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.c | $$(OUTPUT_DIR$(1))
-	$$(COMPILE.c) $$(OUTPUT_OPTION) $$<
-
-$$(OUTPUT_DIR$(1))/%.d:	$(2)%.c | $$(OUTPUT_DIR$(1))
-	@$$(COMPILE.c) $$(CCDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
-
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.s | $$(OUTPUT_DIR$(1))
-	$$(COMPILE.s) $$(OUTPUT_OPTION) $$<
-
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.S | $$(OUTPUT_DIR$(1))
-	$$(COMPILE.S) $$(OUTPUT_OPTION) $$<
-
-$$(OUTPUT_DIR$(1))/%.d:	$(2)%.S | $$(OUTPUT_DIR$(1))
-	@$$(COMPILE.S) $$(SDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
-
-$$(OUTPUT_DIR$(1))/%.o:	$(2)%.spp | $$(OUTPUT_DIR$(1))
-	$$(COMPILE.spp) $$(OUTPUT_OPTION) $$<
-
-$$(OUTPUT_DIR$(1))/%.d:	$(2)%.spp | $$(OUTPUT_DIR$(1))
-	@$$(COMPILE.spp) $$(SPPDEPFLAGS) $$< $$(DP_OUTPUT_DIR$(1))
-endef
-
-define rule_rc
-$$(OUTPUT_DIR$(1))/%.res:	$(2)%.rc | $$(OUTPUT_DIR$(1))
-	$$(COMPILE.rc) $$(RC_OUTPUT_OPTION) $$<
-endef
-
-define rules_
-$(call rule_o,,$(1))
-ifneq ($(OUTPUT_DIR),$(OUTPUT_DIR_A))
-$(call rule_o,_A,$(1))
-endif
-$(call rule_o,_DBG,$(1))
-ifneq ($(OUTPUT_DIR_DBG),$(OUTPUT_DIR_A_DBG))
-$(call rule_o,_A_DBG,$(1))
-endif
 ifndef WITHOUT_STLPORT
-$(call rule_o,_STLDBG,$(1))
-ifneq ($(OUTPUT_DIR_STLDBG),$(OUTPUT_DIR_A_STLDBG))
-$(call rule_o,_A_STLDBG,$(1))
+$$(foreach f,$$($(1)SRC_CC) $$($(1)SRC_CPP) $$($(1)SRC_CXX),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR_STLDBG),$$(OUTPUT_DIR_STLDBG)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.o,$$$$(COMPILE.cc) $$$$(OUTPUT_OPTION) $$$$<,$(1)OBJ_STLDBG)))
+$$(foreach f,$$($(1)SRC_CC) $$($(1)SRC_CPP) $$($(1)SRC_CXX),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR_STLDBG),$$(OUTPUT_DIR_STLDBG)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.d,@$$$$(COMPILE.cc) $$$$(CCDEPFLAGS) $$$$< $$$$(DP_OUTPUT_DIR),$(1)DEP_STLDBG)))
 endif
-endif
+
+# C
+
+$$(foreach f,$$($(1)SRC_C),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR),$$(OUTPUT_DIR)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.o,$$$$(COMPILE.c) $$$$(OUTPUT_OPTION) $$$$<,$(1)OBJ)))
+$$(foreach f,$$($(1)SRC_C),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR),$$(OUTPUT_DIR)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.d,@$$$$(COMPILE.c) $$$$(CCDEPFLAGS) $$$$< $$$$(DP_OUTPUT_DIR),$(1)DEP)))
+
+$$(foreach f,$$($(1)SRC_C),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR_DBG),$$(OUTPUT_DIR_DBG)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.o,$$$$(COMPILE.c) $$$$(OUTPUT_OPTION) $$$$<,$(1)OBJ_DBG)))
+$$(foreach f,$$($(1)SRC_C),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR_DBG),$$(OUTPUT_DIR_DBG)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.d,@$$$$(COMPILE.c) $$$$(CCDEPFLAGS) $$$$< $$$$(DP_OUTPUT_DIR),$(1)DEP_DBG)))
+
+# S
+
+$$(foreach f,$$($(1)SRC_S),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR),$$(OUTPUT_DIR)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.o,$$$$(COMPILE.S) $$$$(OUTPUT_OPTION) $$$$<,$(1)OBJ)))
+$$(foreach f,$$($(1)SRC_S),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR),$$(OUTPUT_DIR)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.d,@$$$$(COMPILE.S) $$$$(SDEPFLAGS) $$$$< $$$$(DP_OUTPUT_DIR),$(1)DEP)))
+
+$$(foreach f,$$($(1)SRC_S),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR_DBG),$$(OUTPUT_DIR_DBG)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.o,$$$$(COMPILE.S) $$$$(OUTPUT_OPTION) $$$$<,$(1)OBJ_DBG)))
+$$(foreach f,$$($(1)SRC_S),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR_DBG),$$(OUTPUT_DIR_DBG)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.d,@$$$$(COMPILE.S) $$$$(SDEPFLAGS) $$$$< $$$$(DP_OUTPUT_DIR),$(1)DEP_DBG)))
+
+# spp
+
+$$(foreach f,$$($(1)SRC_SPP),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR),$$(OUTPUT_DIR)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.o,$$$$(COMPILE.spp) $$$$(OUTPUT_OPTION) $$$$<,$(1)OBJ)))
+$$(foreach f,$$($(1)SRC_SPP),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR),$$(OUTPUT_DIR)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.d,@$$$$(COMPILE.spp) $$$$(SPPDEPFLAGS) $$$$< $$$$(DP_OUTPUT_DIR),$(1)DEP)))
+
+$$(foreach f,$$($(1)SRC_SPP),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR_DBG),$$(OUTPUT_DIR_DBG)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.o,$$$$(COMPILE.spp) $$$$(OUTPUT_OPTION) $$$$<,$(1)OBJ_DBG)))
+$$(foreach f,$$($(1)SRC_SPP),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR_DBG),$$(OUTPUT_DIR_DBG)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.d,@$$$$(COMPILE.spp) $$$$(SPPDEPFLAGS) $$$$< $$$$(DP_OUTPUT_DIR),$(1)DEP_DBG)))
+
 ifeq ($(OSNAME),windows)
-$(call rule_rc,,$(1))
-$(call rule_rc,_DBG,$(1))
+# rc
+$$(foreach f,$$($(1)SRC_RC),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR),$$(OUTPUT_DIR)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.res,$$$$(COMPILE.rc) $$$$(RC_OUTPUT_OPTION) $$$$<,$(1)RES)))
+$$(foreach f,$$($(1)SRC_RC),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR_DBG),$$(OUTPUT_DIR_DBG)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.res,$$$$(COMPILE.rc) $$$$(RC_OUTPUT_OPTION) $$$$<,$(1)RES_DBG)))
 ifndef WITHOUT_STLPORT
-$(call rule_rc,_STLDBG,$(1))
+$$(foreach f,$$($(1)SRC_RC),$$(eval $$(call derive_rule,$$(if $$(OUTPUT_DIR_STLDBG),$$(OUTPUT_DIR_STLDBG)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.res,$$$$(COMPILE.rc) $$$$(RC_OUTPUT_OPTION) $$$$<,$(1)RES_STLDBG)))
 endif
+endif
+
+ifeq ("$$(sort $${$(1)SRC_CC} $${$(1)SRC_CPP} $${$(1)SRC_CXX})","")
+$(1)NOT_USE_NOSTDLIB := 1
+_$(1)C_SOURCES_ONLY := true
 endif
 endef
 
-$(foreach dir,$(DIRS_UNIQUE_SRC),$(eval $(call rules_,$(dir))))
-
-ifeq (${OSNAME},windows)
-RCBASE    += $(basename $(notdir $(SRC_RC)))
-endif
-
-ALLOBJS     := $(addsuffix .o,$(ALLBASE))
-PRI_ALLOBJS := $(addsuffix .o,$(PRI_ALLBASE))
-ALLDEPS     := $(addsuffix .d,$(ALLBASE))
-ALLRESS     := $(addsuffix .res,$(RCBASE))
-
-OBJ            := $(addprefix $(OUTPUT_DIR)/,$(ALLOBJS))
-PRI_OBJ        := $(addprefix $(OUTPUT_DIR)/,$(PRI_ALLOBJS))
-OBJ_DBG        := $(addprefix $(OUTPUT_DIR_DBG)/,$(ALLOBJS))
-PRI_OBJ_DBG    := $(addprefix $(OUTPUT_DIR_DBG)/,$(PRI_ALLOBJS))
-OBJ_STLDBG     := $(addprefix $(OUTPUT_DIR_STLDBG)/,$(ALLOBJS))
-PRI_OBJ_STLDBG := $(addprefix $(OUTPUT_DIR_STLDBG)/,$(PRI_ALLOBJS))
-
-DEP        := $(addprefix $(OUTPUT_DIR)/,$(ALLDEPS))
-DEP_DBG    := $(addprefix $(OUTPUT_DIR_DBG)/,$(ALLDEPS))
-DEP_STLDBG := $(addprefix $(OUTPUT_DIR_STLDBG)/,$(ALLDEPS))
-
-RES        := $(addprefix $(OUTPUT_DIR)/,$(ALLRESS))
-RES_DBG    := $(addprefix $(OUTPUT_DIR_DBG)/,$(ALLRESS))
-RES_STLDBG := $(addprefix $(OUTPUT_DIR_STLDBG)/,$(ALLRESS))
-
-ifeq ($(OUTPUT_DIR),$(OUTPUT_DIR_A))
-OBJ_A      := $(OBJ)
-DEP_A      := $(DEP)
-else
-OBJ_A      := $(addprefix $(OUTPUT_DIR_A)/,$(ALLOBJS))
-DEP_A      := $(addprefix $(OUTPUT_DIR_A)/,$(ALLDEPS))
-endif
-
-ifeq ($(OUTPUT_DIR_DBG),$(OUTPUT_DIR_A_DBG))
-OBJ_A_DBG  := $(OBJ_DBG)
-DEP_A_DBG  := $(DEP_DBG)
-else
-OBJ_A_DBG  := $(addprefix $(OUTPUT_DIR_A_DBG)/,$(ALLOBJS))
-DEP_A_DBG  := $(addprefix $(OUTPUT_DIR_A_DBG)/,$(ALLDEPS))
-endif
-
-ifeq ($(OUTPUT_DIR_STLDBG),$(OUTPUT_DIR_A_STLDBG))
-OBJ_A_STLDBG := $(OBJ_STLDBG)
-DEP_A_STLDBG := $(DEP_STLDBG)
-else
-OBJ_A_STLDBG := $(addprefix $(OUTPUT_DIR_A_STLDBG)/,$(ALLOBJS))
-DEP_A_STLDBG := $(addprefix $(OUTPUT_DIR_A_STLDBG)/,$(ALLDEPS))
-endif
+# $(eval $(call prog_,))
+$(foreach prg,$(PRGNAMES),$(eval $(call prog_,$(prg)_)))
 
 define pdf_
 ${OUTPUT_DIR}/$(basename $(notdir $(firstword $($(1)_SRC_TEX)))).pdf:       $($(1)_SRC_TEX) $($(1)_MPS) $($(1)_EXTRA)

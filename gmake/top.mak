@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <2013-06-15 00:03:40 ptr>
+# -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2013
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -90,13 +90,14 @@ endif
 
 # compiler, compiler options
 include ${RULESBASE}/gmake/$(COMPILER_NAME).mak
-# rules to make dirs for targets
-include ${RULESBASE}/gmake/targetdirs.mak
 
 # os-specific local rules (or other project-specific definitions)
 -include specific.mak
 
 LDFLAGS += ${EXTRA_LDFLAGS}
+
+# rules to make dirs for targets
+include ${RULESBASE}/gmake/targetdirs.mak
 
 # derive common targets (*.o, *.d),
 # build rules (including output catalogs)
@@ -130,4 +131,11 @@ SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL}
 else
 SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL} -x
 endif
+endif
+
+OUTPUT_DIRS := $(sort $(OUTPUT_DIRS))
+
+ifneq ($(OUTPUT_DIRS),)
+$(OUTPUT_DIRS):
+	@mkdir -p $@
 endif

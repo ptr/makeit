@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <08/10/22 18:32:42 ptr>
+# -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005, 2006, 2008
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -27,8 +27,17 @@ ifdef PRGNAME
 endif
 ifdef LIBNAME
 	@-rm -f $(OBJ) $(DEP)
+ifneq (${OUTPUT_DIR},${OUTPUT_DIR_A})
+	@-rm -f $(OBJ_A) $(DEP_A)
+endif
 	@-rm -f $(OBJ_DBG) $(DEP_DBG)
+ifneq (${OUTPUT_DIR_DBG},${OUTPUT_DIR_A_DBG})
+	@-rm -f $(OBJ_A_DBG) $(DEP_A_DBG)
+endif
 	@-rm -f $(OBJ_STLDBG) $(DEP_STLDBG)
+ifneq (${OUTPUT_DIR_STLDBG},${OUTPUT_DIR_A_STLDBG})
+	@-rm -f $(OBJ_A_STLDBG) $(DEP_A_STLDBG)
+endif
 endif
 
 $(foreach prg,$(PRGNAMES),$(eval $(call obj_clean,$(prg))))
