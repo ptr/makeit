@@ -28,3 +28,12 @@ INSTALL_F := ${INSTALL} -c -p -m 0644
 # bash's built-in test is like extern
 # EXT_TEST := /usr/bin/test
 EXT_TEST := test
+
+define _newline
+
+
+endef
+
+define multiline_echo
+echo -e '$(call subst,${_newline},\n,${1})'
+endef

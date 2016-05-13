@@ -1,7 +1,7 @@
-# -*- Makefile -*- Time-stamp: <2011-08-22 19:09:25 ptr>
+# -*- Makefile -*- Time-stamp: <2016-05-13 11:30:36 ptr>
 
 RULESBASE := ..
-SUBDIRS := subdirs app1 app2 app2-mult app-c so1 somodule
+SUBDIRS := subdirs app1 app2 app2-mult app-c so1 somodule multiline_echo
 include ${RULESBASE}/gmake/subdirs.mak
 
 check:
