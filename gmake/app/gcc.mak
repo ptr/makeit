@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <10/05/14 18:41:49 ptr>
+# -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2010
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2010, 2016
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -111,6 +111,7 @@ endif
 ifdef _USE_NOSTDLIB
 
 # Check whether gcc builded with --disable-shared
+ifndef _LGCC_EH
 ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_eh.a),libgcc_eh.a)
 # gcc builded with --disable-shared, (no library libgcc_eh.a); all exception support in libgcc.a
 _LGCC_EH :=
@@ -142,6 +143,8 @@ endif
 # end of !USE_STATIC_LIBGCC
 endif
 # end of present libgcc_eh.a
+endif
+# defined _LGCC_EH
 endif
 
 # ifeq ($(CXX_VERSION_MAJOR),3)

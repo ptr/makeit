@@ -1,6 +1,6 @@
-# -*- Makefile -*-
+# -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -43,13 +43,23 @@ AS := ${TARGET_OS}-${AS}
 endif
 endif
 
+ifndef CXX_VERSION
 CXX_VERSION := $(shell ${CXX} -dumpversion)
+endif
+ifndef CXX_VERSION_MAJOR
 CXX_VERSION_MAJOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$1; }')
+endif
+ifndef CXX_VERSION_MINOR
 CXX_VERSION_MINOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$2; }')
+endif
+ifndef CXX_VERSION_PATCH
 CXX_VERSION_PATCH := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$3; }')
+endif
 
 # Check that we need option -fuse-cxa-atexit for compiler
+ifndef _CXA_ATEXIT
 _CXA_ATEXIT := $(shell ${CXX} -v 2>&1 | grep -q -e "--enable-__cxa_atexit" || echo "-fuse-cxa-atexit")
+endif
 
 ifeq ($(OSNAME), darwin)
 # This is to differentiate Apple-builded compiler from original

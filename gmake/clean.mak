@@ -1,6 +1,6 @@
 # -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -45,12 +45,14 @@ $(foreach prg,$(PRGNAMES),$(eval $(call obj_clean,$(prg))))
 $(foreach prg,$(LIBNAMES),$(eval $(call obj_clean,$(prg))))
 
 distclean::	clean
+	@-rm -f .config.mk
 # $(DEPENDS_COLLECTION) removed before directory,
 # see app/clean.mak and lib/clean.mak
 
 mostlyclean::	clean
 	@-rm -f $(DEPENDS_COLLECTION)
 	@-rm -f TAGS tags
+	@-rm -f .config.mk
 
 maintainer-clean::	distclean
 	@rm -f ${RULESBASE}/gmake/config.mak

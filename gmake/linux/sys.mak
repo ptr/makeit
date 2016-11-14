@@ -1,6 +1,6 @@
-# -*- Makefile -*-
+# -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -9,7 +9,9 @@
 # Licensed under the Academic Free License version 3.0
 #
 
+ifndef INSTALL
 INSTALL := $(shell if [ -e /usr/bin/install ]; then echo -n "/usr/bin/install"; else if [ -e /bin/install ]; then echo -n "/bin/install"; fi fi )
+endif
 
 install-strip:	_INSTALL_STRIP_OPTION = -s
 

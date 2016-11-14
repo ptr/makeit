@@ -1,6 +1,6 @@
-# -*- Makefile -*-
+# -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001

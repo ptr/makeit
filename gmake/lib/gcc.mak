@@ -1,6 +1,6 @@
-# -*- makefile -*-
+# -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -146,10 +146,12 @@ endif
 # end of present libgcc_eh.a
 endif
 
+ifndef _LSUPCPP
 _LSUPCPP := $(shell ${CXX} ${CXXFLAGS} -print-file-name=libsupc++.a)
 ifeq (${OSNAME},darwin)
 ifdef GCC_APPLE_CC
 _LSUPCPP := $(shell mkdir -p $(PRE_OUTPUT_DIR) && lipo ${_LSUPCPP} -thin ${M_ARCH} -output $(PRE_OUTPUT_DIR)/libsupc++.a && echo $(PRE_OUTPUT_DIR)/libsupc++.a)
+endif
 endif
 endif
 
