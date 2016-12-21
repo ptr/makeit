@@ -1,6 +1,6 @@
-# -*- Makefile -*- Time-stamp: <2013-06-14 23:53:41 ptr>
+# -*- Makefile -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2013
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2013, 2016
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -48,7 +48,7 @@ ifndef WITHOUT_STLPORT
 OUTPUT_DIR_A_STLDBG    := $(OUTPUT_DIR_STLDBG)
 endif
 
-BASE_INSTALL_DIR       ?= $(DESTDIR)/usr/local
+BASE_INSTALL_DIR       ?= /usr/local
 
 BASE_INSTALL_LIB_DIR   ?= ${BASE_INSTALL_DIR}
 BASE_INSTALL_BIN_DIR   ?= ${BASE_INSTALL_DIR}
@@ -86,7 +86,7 @@ endif
 #OUTPUT_DIRS := $(sort $(OUTPUT_DIRS))
 INSTALL_LIB_DIRS := $(sort $(INSTALL_LIB_DIRS))
 INSTALL_BIN_DIRS := $(sort $(INSTALL_BIN_DIRS))
-INSTALL_DIRS := $(sort $(INSTALL_LIB_DIRS) $(INSTALL_BIN_DIRS))
+INSTALL_DIRS := $(patsubst %,$$(DESTDIR)%,$(sort $(INSTALL_LIB_DIRS) $(INSTALL_BIN_DIRS)))
 
 define createdirs
 @if [ ! -e $@ ]; then \
