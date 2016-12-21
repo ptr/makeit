@@ -129,25 +129,25 @@ $(DESTDIR)$(INSTALL_BIN_DIR_DBG)/${INSTALL_PRGNAME}:	dbg-shared | $(DESTDIR)$(IN
 endif
 endif
 
-install-release-shared:	$(INSTALL_PRGNAMES)
+install-release-shared:	$(INSTALL_PRGNAMES) $(INSTALL_DEPS_EXTRA)
 	if [ -e $(PRE_OUTPUT_DIR)/.install ] ; then \
 	  rm $(PRE_OUTPUT_DIR)/.install; \
 	  : ; $(POST_INSTALL) \
 	fi
 
-install-dbg-shared:	$(INSTALL_PRGNAMES_DBG)
+install-dbg-shared:	$(INSTALL_PRGNAMES_DBG) $(INSTALL_DEPS_DBG_EXTRA)
 	if [ -e $(PRE_OUTPUT_DIR)/.install ] ; then \
 	  rm $(PRE_OUTPUT_DIR)/.install; \
 	  : ; $(POST_INSTALL_DBG) \
 	fi
 
-install-strip:	$(INSTALL_PRGNAMES)
+install-strip:	$(INSTALL_PRGNAMES) $(INSTALL_DEPS_EXTRA)
 	if [ -e $(PRE_OUTPUT_DIR)/.install ] ; then \
 	  rm $(PRE_OUTPUT_DIR)/.install; \
 	  : ; $(POST_INSTALL) \
 	fi
 
-install-strip-shared:	$(INSTALL_PRGNAMES)
+install-strip-shared:	$(INSTALL_PRGNAMES) $(INSTALL_DEPS_EXTRA)
 	if [ -e $(PRE_OUTPUT_DIR)/.install ] ; then \
 	  rm $(PRE_OUTPUT_DIR)/.install; \
 	  : ; $(POST_INSTALL) \
