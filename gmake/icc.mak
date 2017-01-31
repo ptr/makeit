@@ -19,10 +19,10 @@ ifdef TARGET_OS
 # CC := ${TARGET_OS}-gcc
 endif
 
-CXX_VERSION := $(shell ${CXX} --version | awk 'NR == 1 {print $$3; }')
+CXX_VERSION := $(shell PATH=${PATH} ${CXX} --version | awk 'NR == 1 {print $$3; }')
 # if we didn't get anything from that, use the old style for versions < 9
 ifeq (${CXX_VERSION},)
-CXX_VERSION := $(shell ${CXX} --version)
+CXX_VERSION := $(shell PATH=${PATH} ${CXX} --version)
 endif
 
 CXX_VERSION_MAJOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$1; }')

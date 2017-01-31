@@ -31,18 +31,18 @@ CC := ${TARGET_OS}-${CC}
 AS := ${TARGET_OS}-${AS}
 endif
 
-CXX_VERSION := $(shell ${CXX} -dumpversion)
+CXX_VERSION := $(shell PATH=${PATH} ${CXX} -dumpversion)
 CXX_VERSION_MAJOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$1; }')
 CXX_VERSION_MINOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$2; }')
 CXX_VERSION_PATCH := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$3; }')
 
 # Check that we need option -fuse-cxa-atexit for compiler
-_CXA_ATEXIT := $(shell ${CXX} -v 2>&1 | grep -q -e "--enable-__cxa_atexit" || echo "-fuse-cxa-atexit")
+_CXA_ATEXIT := $(shell PATH=${PATH} ${CXX} -v 2>&1 | grep -q -e "--enable-__cxa_atexit" || echo "-fuse-cxa-atexit")
 
 ifeq ($(OSNAME), darwin)
 # This is to differentiate Apple-builded compiler from original
 # GNU compiler (it has different behaviour)
-ifneq ("$(shell ${CXX} -v 2>&1 | grep Apple)", "")
+ifneq ("$(shell PATH=${PATH} ${CXX} -v 2>&1 | grep Apple)", "")
 GCC_APPLE_CC := 1
 endif
 endif

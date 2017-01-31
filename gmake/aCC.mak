@@ -21,9 +21,9 @@ else
 CC := ${_FORCE_CC}
 endif
 
-CXX_VERSION := $(shell ${CXX} --version 2>&1 | grep ${CXX} | awk '{ print $$6; }')
+CXX_VERSION := $(shell PATH=${PATH} ${CXX} --version 2>&1 | grep ${CXX} | awk '{ print $$6; }')
 ifeq ($(CXX_VERSION),)
-CXX_VERSION := $(shell ${CXX} --version)
+CXX_VERSION := $(shell PATH=${PATH} ${CXX} --version)
 endif
 CXX_VERSION_MAJOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$2; }')
 CXX_VERSION_MINOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$3; }')

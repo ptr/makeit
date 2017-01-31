@@ -118,7 +118,7 @@ ifdef _USE_NOSTDLIB
 NOSTDLIB :=
 
 # Check whether gcc builded with --disable-shared
-ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_eh.a),libgcc_eh.a)
+ifeq ($(shell PATH=${PATH} ${CXX} ${CXXFLAGS} -print-file-name=libgcc_eh.a),libgcc_eh.a)
 # gcc builded with --disable-shared, (no library libgcc_eh.a); all exception support in libgcc.a
 _LGCC_EH :=
 _LGCC_S := -lgcc
@@ -147,7 +147,7 @@ endif
 endif
 
 ifndef _LSUPCPP
-_LSUPCPP := $(shell ${CXX} ${CXXFLAGS} -print-file-name=libsupc++.a)
+_LSUPCPP := $(shell PATH=${PATH} ${CXX} ${CXXFLAGS} -print-file-name=libsupc++.a)
 ifeq (${OSNAME},darwin)
 ifdef GCC_APPLE_CC
 _LSUPCPP := $(shell mkdir -p $(PRE_OUTPUT_DIR) && lipo ${_LSUPCPP} -thin ${M_ARCH} -output $(PRE_OUTPUT_DIR)/libsupc++.a && echo $(PRE_OUTPUT_DIR)/libsupc++.a)
@@ -156,7 +156,7 @@ endif
 endif
 
 ifneq (${_LSUPCPP},libsupc++.a)
-_LSUPCPP_OBJ     := $(shell $(AR) t ${_LSUPCPP})
+_LSUPCPP_OBJ     := $(shell PATH=${PATH} $(AR) t ${_LSUPCPP})
 _LSUPCPP_AUX_OBJ := $(addprefix $(AUX_DIR)/,${_LSUPCPP_OBJ})
 _LSUPCPP_TSMP    := .supc++
 _LSUPCPP_AUX_TSMP:= $(AUX_DIR)/$(_LSUPCPP_TSMP)
@@ -232,7 +232,7 @@ NOSTDLIB := -nodefaultlibs
 ifeq ($(OSNAME),windows)
 
 ifndef USE_STATIC_LIBGCC
-ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_s.a),libgcc_s.a)
+ifeq ($(shell PATH=${PATH} ${CXX} ${CXXFLAGS} -print-file-name=libgcc_s.a),libgcc_s.a)
 _LGCC_S := -lgcc
 else
 _LGCC_S := -lgcc_s

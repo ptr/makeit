@@ -23,7 +23,7 @@ else
 CC := ${_FORCE_CC}
 endif
 
-CXX_VERSION := $(shell ${CXX} -V 2>&1 | grep ${CXX} | awk '{ print $$4; }')
+CXX_VERSION := $(shell PATH=${PATH} ${CXX} -V 2>&1 | grep ${CXX} | awk '{ print $$4; }')
 
 CXX_VERSION_MAJOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$1; }')
 CXX_VERSION_MINOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$2; }')

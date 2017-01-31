@@ -112,7 +112,7 @@ ifdef _USE_NOSTDLIB
 
 # Check whether gcc builded with --disable-shared
 ifndef _LGCC_EH
-ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_eh.a),libgcc_eh.a)
+ifeq ($(shell PATH=${PATH} ${CXX} ${CXXFLAGS} -print-file-name=libgcc_eh.a),libgcc_eh.a)
 # gcc builded with --disable-shared, (no library libgcc_eh.a); all exception support in libgcc.a
 _LGCC_EH :=
 _LGCC_S := -lgcc
@@ -203,7 +203,7 @@ endif
 ifeq ($(OSNAME),windows)
 LDFLAGS += -nodefaultlibs
 ifndef USE_STATIC_LIBGCC
-ifeq ($(shell ${CXX} ${CXXFLAGS} -print-file-name=libgcc_s.a),libgcc_s.a)
+ifeq ($(shell PATH=${PATH} ${CXX} ${CXXFLAGS} -print-file-name=libgcc_s.a),libgcc_s.a)
 _LGCC_S := -lgcc
 else
 _LGCC_S := -lgcc_s

@@ -44,7 +44,7 @@ endif
 endif
 
 ifndef CXX_VERSION
-CXX_VERSION := $(shell ${CXX} -dumpversion)
+CXX_VERSION := $(shell PATH=${PATH} ${CXX} -dumpversion)
 endif
 ifndef CXX_VERSION_MAJOR
 CXX_VERSION_MAJOR := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { print $$1; }')
@@ -58,13 +58,13 @@ endif
 
 # Check that we need option -fuse-cxa-atexit for compiler
 ifndef _CXA_ATEXIT
-_CXA_ATEXIT := $(shell ${CXX} -v 2>&1 | grep -q -e "--enable-__cxa_atexit" || echo "-fuse-cxa-atexit")
+_CXA_ATEXIT := $(shell PATH=${PATH} ${CXX} -v 2>&1 | grep -q -e "--enable-__cxa_atexit" || echo "-fuse-cxa-atexit")
 endif
 
 ifeq ($(OSNAME), darwin)
 # This is to differentiate Apple-builded compiler from original
 # GNU compiler (it has different behaviour)
-ifneq ("$(shell ${CXX} -v 2>&1 | grep Apple)", "")
+ifneq ("$(shell PATH=${PATH} ${CXX} -v 2>&1 | grep Apple)", "")
 GCC_APPLE_CC := 1
 endif
 endif
