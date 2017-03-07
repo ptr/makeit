@@ -19,7 +19,8 @@ clean::
 endef
 
 clean::	
-	@-rm -f core core.*
+	@-[ -f core ] && rm core
+	@-rm -f core.*
 ifdef PRGNAME
 	@-rm -f $(OBJ) $(DEP)
 	@-rm -f $(OBJ_DBG) $(DEP_DBG)
