@@ -143,6 +143,19 @@ ifndef BUILD_OSNAME
 BUILD_OSNAME := $(shell uname -s | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 endif
 
+# Some installation require root's privileges. If sudo found, it will be in use;
+# otherwise I will use 'su -c' (frequently, 'su' just not work when sudo present in system)
+
+ifndef SU
+SU := $(shell which sudo |& grep -q "no sudo" && if [ `id -u ` -eq 0 ]; then  echo "/bin/bash -c"; else echo "su -c"; fi || echo "sudo /bin/bash -c")
+endif
+
+ifndef PARALLEL
+ifndef NOPARALLEL
+PARALLEL := -j$(shell echo $$((`nproc` + 2)))
+endif
+endif
+
 # RedHat use nonstandard options for uname at least in cygwin,
 # macro should be overwritten:
 ifeq (cygwin,$(findstring cygwin,$(BUILD_OSNAME)))
