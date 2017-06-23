@@ -1,6 +1,6 @@
-# -*- makefile -*- Time-stamp: <06/11/02 10:37:02 ptr>
+# -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2007
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2007, 2017
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -15,6 +15,7 @@ LIBPREFIX ?= lib
 
 # Shared libraries:
 
+ifdef LIBNAME
 SO_NAME        := ${LIBPREFIX}${LIBNAME}.$(SO)
 SO_NAMEx       := ${SO_NAME}.${MAJOR}
 SO_NAMExx      := ${SO_NAMEx}.${MINOR}
@@ -47,6 +48,52 @@ SO_NAME_OUT_STLDBGxx  := $(OUTPUT_DIR_STLDBG)/${SO_NAME_STLDBGxx}
 SO_NAME_OUT_STLDBGxxx := $(OUTPUT_DIR_STLDBG)/${SO_NAME_STLDBGxxx}
 # WITHOUT_STLPORT
 endif
+endif
+
+ALLLIBS = ${SO_NAME_OUTxxx}
+ALLLIBS_DBG = ${SO_NAME_OUT_DBGxxx}
+ALLLIBS_STLDBG = ${SO_NAME_OUT_STLDBGxxx}
+
+define lib_lib
+$(1)_SO_NAME        := ${LIBPREFIX}$(1).$(SO)
+$(1)_SO_NAMEx       := $${$(1)_SO_NAME}.$${$(1)_MAJOR}
+$(1)_SO_NAMExx      := $${$(1)_SO_NAMEx}.$${$(1)_MINOR}
+$(1)_SO_NAMExxx     := $${$(1)_SO_NAMExx}.$${$(1)_PATCH}
+
+$(1)_SO_NAME_OUT    := $(OUTPUT_DIR)/$${$(1)_SO_NAME}
+$(1)_SO_NAME_OUTx   := $(OUTPUT_DIR)/$${$(1)_SO_NAMEx}
+$(1)_SO_NAME_OUTxx  := $(OUTPUT_DIR)/$${$(1)_SO_NAMExx}
+$(1)_SO_NAME_OUTxxx := $(OUTPUT_DIR)/$${$(1)_SO_NAMExxx}
+
+$(1)_SO_NAME_DBG    := ${LIBPREFIX}$(1)${DBG_SUFFIX}.$(SO)
+$(1)_SO_NAME_DBGx   := $${$(1)_SO_NAME_DBG}.$${$(1)_MAJOR}
+$(1)_SO_NAME_DBGxx  := $${$(1)_SO_NAME_DBGx}.$${$(1)_MINOR}
+$(1)_SO_NAME_DBGxxx := $${$(1)_SO_NAME_DBGxx}.$${$(1)_PATCH}
+
+$(1)_SO_NAME_OUT_DBG    := $(OUTPUT_DIR_DBG)/$${$(1)_SO_NAME_DBG}
+$(1)_SO_NAME_OUT_DBGx   := $(OUTPUT_DIR_DBG)/$${$(1)_SO_NAME_DBGx}
+$(1)_SO_NAME_OUT_DBGxx  := $(OUTPUT_DIR_DBG)/$${$(1)_SO_NAME_DBGxx}
+$(1)_SO_NAME_OUT_DBGxxx := $(OUTPUT_DIR_DBG)/$${$(1)_SO_NAME_DBGxxx}
+
+ifndef WITHOUT_STLPORT
+$(1)_SO_NAME_STLDBG    := ${LIBPREFIX}$(1)${STLDBG_SUFFIX}.$(SO)
+$(1)_SO_NAME_STLDBGx   := $${$(1)_SO_NAME_STLDBG}.$${$(1)_MAJOR}
+$(1)_SO_NAME_STLDBGxx  := $${$(1)_SO_NAME_STLDBGx}.$${$(1)_MINOR}
+$(1)_SO_NAME_STLDBGxxx := $${$(1)_SO_NAME_STLDBGxx}.$${$(1)_PATCH}
+
+$(1)_SO_NAME_OUT_STLDBG    := $(OUTPUT_DIR_STLDBG)/$${$(1)_SO_NAME_STLDBG}
+$(1)_SO_NAME_OUT_STLDBGx   := $(OUTPUT_DIR_STLDBG)/$${$(1)_SO_NAME_STLDBGx}
+$(1)_SO_NAME_OUT_STLDBGxx  := $(OUTPUT_DIR_STLDBG)/$${$(1)_SO_NAME_STLDBGxx}
+$(1)_SO_NAME_OUT_STLDBGxxx := $(OUTPUT_DIR_STLDBG)/$${$(1)_SO_NAME_STLDBGxxx}
+# WITHOUT_STLPORT
+endif
+
+ALLLIBS        += $${$(1)_SO_NAME_OUTxxx}
+ALLLIBS_DBG    += $${$(1)_SO_NAME_OUT_DBGxxx}
+ALLLIBS_STLDBG += $${$(1)_SO_NAME_OUT_STLDBGxxx}
+endef
+
+$(foreach l,$(LIBNAMES),$(eval $(call lib_lib,$(l))))
 
 # Static libraries:
 

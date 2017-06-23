@@ -1,6 +1,6 @@
-# -*- Makefile -*-
+# -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2017
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -9,18 +9,18 @@
 # Licensed under the Academic Free License version 3.0
 #
 
-dbg-shared:	$(EXTRA_PRE_DBG) ${PRG_DBG} ${ALLPRGS_DBG} $(EXTRA_POST_DBG)
+dbg-shared:	$(EXTRA_PRE_DBG) ${ALLPRGS_DBG} $(EXTRA_POST_DBG)
 
-dbg-static:	$(EXTRA_PRE_DBG) ${PRG_DBG} ${ALLPRGS_DBG} $(EXTRA_POST_DBG)
+dbg-static:	$(EXTRA_PRE_DBG) ${ALLPRGS_DBG} $(EXTRA_POST_DBG)
 
-release-shared:	$(EXTRA_PRE) ${PRG} ${ALLPRGS} $(EXTRA_POST)
+release-shared:	$(EXTRA_PRE) ${ALLPRGS} $(EXTRA_POST)
 
-release-static:	$(EXTRA_PRE) ${PRG} ${ALLPRGS} $(EXTRA_POST)
+release-static:	$(EXTRA_PRE) ${ALLPRGS} $(EXTRA_POST)
 
 ifndef WITHOUT_STLPORT
-stldbg-shared:	$(EXTRA_PRE_STLDBG) ${PRG_STLDBG} ${ALLPRGS_STLDBG} $(EXTRA_POST_STLDBG)
+stldbg-shared:	$(EXTRA_PRE_STLDBG) ${ALLPRGS_STLDBG} $(EXTRA_POST_STLDBG)
 
-stldbg-static:	$(EXTRA_PRE_STLDBG) ${PRG_STLDBG} ${ALLPRGS_STLDBG} $(EXTRA_POST_STLDBG)
+stldbg-static:	$(EXTRA_PRE_STLDBG) ${ALLPRGS_STLDBG} $(EXTRA_POST_STLDBG)
 endif
 
 ifeq ("$(findstring $(COMPILER_NAME),bcc dmc)","")

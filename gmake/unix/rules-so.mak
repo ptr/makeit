@@ -1,6 +1,6 @@
-# -*- makefile-gmake -*-
+# -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2017
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -13,12 +13,12 @@
 
 PHONY += release-shared dbg-shared stldbg-shared
 
-release-shared:	$(EXTRA_PRE) ${SO_NAME_OUTxxx} $(EXTRA_POST)
+release-shared:	$(EXTRA_PRE) ${ALLLIBS} $(EXTRA_POST)
 
-dbg-shared:	$(EXTRA_PRE_DBG) ${SO_NAME_OUT_DBGxxx} $(EXTRA_POST_DBG)
+dbg-shared:	$(EXTRA_PRE_DBG) ${ALLLIBS_DBG} $(EXTRA_POST_DBG)
 
 ifndef WITHOUT_STLPORT
-stldbg-shared:	$(EXTRA_PRE_STLDBG) ${SO_NAME_OUT_STLDBGxxx} $(EXTRA_POST_STLDBG)
+stldbg-shared:	$(EXTRA_PRE_STLDBG) ${ALLLIBS_STLDBG} $(EXTRA_POST_STLDBG)
 endif
 
 define do_so_links_1
@@ -49,24 +49,39 @@ endef
 define do_so_links
 $${SO_NAME_OUT$(1)xxx}:	$$(OBJ$(1)) $$(LIBSDEP) | $$(OUTPUT_DIR$(1))
 ifeq ("${_C_SOURCES_ONLY}","")
-	$$(LINK.cc) $$(LINK_OUTPUT_OPTION) $${START_OBJ} $$(OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ}
+	$$(LINK.cc) $(call so_name,$${SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${START_OBJ} $$(OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ}
 else
-	$$(LINK.c) $$(LINK_OUTPUT_OPTION) $${START_OBJ} $$(OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ}
+	$$(LINK.c) $(call so_name,$${SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${START_OBJ} $$(OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ}
 endif
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${SO_NAME$(1)xx},$${SO_NAME$(1)xxx})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${SO_NAME$(1)x},$${SO_NAME$(1)xx})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${SO_NAME$(1)},$${SO_NAME$(1)x})
 endef
 
+define do_so_links_m
+$${$(2)_SO_NAME_OUT$(1)xxx}:	$$($(2)_OBJ$(1)) $$(LIBSDEP) | $$(OUTPUT_DIR$(1))
+ifeq ("$${_$(2)_C_SOURCES_ONLY}","")
+	$$(LINK.cc) $(call so_name,$${$(2)_SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${START_OBJ} $$($(2)_OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ}
+else
+	$$(LINK.c) $(call so_name,$${$(2)_SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${START_OBJ} $$($(2)_OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ}
+endif
+	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${$(2)_SO_NAME$(1)xx},$${$(2)_SO_NAME$(1)xxx})
+	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${$(2)_SO_NAME$(1)x},$${$(2)_SO_NAME$(1)xx})
+	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${$(2)_SO_NAME$(1)},$${$(2)_SO_NAME$(1)x})
+endef
+
 define do_so_links_wk
 # expand to nothing, if WITHOUT_STLPORT
 ifndef WITHOUT_STLPORT
 $(call do_so_links,$(1))
+$(foreach l,$(LIBNAMES),$(eval $(call do_so_links_m,$(1),$(l))))
 endif
 endef
 
 $(eval $(call do_so_links,))
+$(foreach l,$(LIBNAMES),$(eval $(call do_so_links_m,,$(l))))
 $(eval $(call do_so_links,_DBG))
+$(foreach l,$(LIBNAMES),$(eval $(call do_so_links_m,_DBG,$(l))))
 # ifndef WITHOUT_STLPORT
 $(eval $(call do_so_links_wk,_STLDBG))
 # endif

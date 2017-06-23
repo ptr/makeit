@@ -1,6 +1,6 @@
-# -*- makefile -*- Time-stamp: <08/06/12 13:55:47 ptr>
+# -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2008
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2008, 2017
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001

@@ -1,6 +1,6 @@
-# -*- makefile-gmake -*-
+# -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002-2014
+# Copyright (c) 1997-1999, 2002-2014, 2017
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -141,7 +141,7 @@ endif
 endef
 
 # $(eval $(call prog_,))
-$(foreach prg,$(PRGNAMES),$(eval $(call prog_,$(prg)_)))
+$(foreach prg,$(PRGNAMES) $(LIBNAMES),$(eval $(call prog_,$(prg)_)))
 
 define pdf_
 OUTPUT_DIRS += ${OUTPUT_DIR}

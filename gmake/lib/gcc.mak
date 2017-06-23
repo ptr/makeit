@@ -1,6 +1,6 @@
-# -*- makefile-gmake -*-
+# -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016, 2017
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -264,9 +264,13 @@ release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),linux)
-dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
+define so_name
+-Wl,-h$(1)
+endef
+
+dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+release-shared:	LDFLAGS += -shared ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),windows)

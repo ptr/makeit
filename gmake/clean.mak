@@ -1,6 +1,6 @@
-# -*- makefile-gmake -*-
+# -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016, 2017
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -41,9 +41,7 @@ ifneq (${OUTPUT_DIR_STLDBG},${OUTPUT_DIR_A_STLDBG})
 endif
 endif
 
-$(foreach prg,$(PRGNAMES),$(eval $(call obj_clean,$(prg))))
-
-$(foreach prg,$(LIBNAMES),$(eval $(call obj_clean,$(prg))))
+$(foreach prg,$(PRGNAMES) $(LIBNAMES) $(PDFNAMES),$(eval $(call obj_clean,$(prg))))
 
 distclean::	clean
 	@-rm -f .config.mk
