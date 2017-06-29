@@ -47,6 +47,8 @@ endef
 # The GNU make 3.81 free from this problem, but it new...
 
 define do_so_links
+OUTPUT_DIRS += $$(OUTPUT_DIR$(1))
+
 $${SO_NAME_OUT$(1)xxx}:	$$(OBJ$(1)) $$(LIBSDEP) | $$(OUTPUT_DIR$(1))
 ifeq ("${_C_SOURCES_ONLY}","")
 	$$(LINK.cc) $(call so_name,$${SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${START_OBJ} $$(OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ}
@@ -59,6 +61,8 @@ endif
 endef
 
 define do_so_links_m
+OUTPUT_DIRS += $$(OUTPUT_DIR$(1))
+
 $${$(2)_SO_NAME_OUT$(1)xxx}:	$$($(2)_OBJ$(1)) $$(LIBSDEP) | $$(OUTPUT_DIR$(1))
 ifeq ("$${_$(2)_C_SOURCES_ONLY}","")
 	$$(LINK.cc) $(call so_name,$${$(2)_SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${START_OBJ} $$($(2)_OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ}
