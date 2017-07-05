@@ -44,6 +44,11 @@ $(LINK.c) $(LINK_OUTPUT_OPTION) ${START_OBJ} $(1) $(LDLIBS) ${STDLIBS} ${END_OBJ
 endef
 
 define prog_lnk
+OUTPUT_DIRS += $${OUTPUT_DIR} $${OUTPUT_DIR_DBG}
+ifndef WITHOUT_STLPORT
+OUTPUT_DIRS += $${OUTPUT_DIR_STLDBG}
+endif
+
 ifeq ($${_$(1)_C_SOURCES_ONLY},)
 $${$(1)_PRG}:	$$($(1)_OBJ) $$(LIBSDEP) | $${OUTPUT_DIR}
 	$$(call cpplnk_str,$$($(1)_OBJ))
@@ -70,6 +75,11 @@ endif
 endef
 
 $(foreach prg,$(PRGNAMES),$(eval $(call prog_lnk,$(prg))))
+
+OUTPUT_DIRS += ${OUTPUT_DIR} ${OUTPUT_DIR_DBG}
+ifndef WITHOUT_STLPORT
+OUTPUT_DIRS += ${OUTPUT_DIR} ${OUTPUT_DIR_DBG}
+endif
 
 ifeq ("${_C_SOURCES_ONLY}","")
 ${PRG}:	$(OBJ) $(LIBSDEP) | ${OUTPUT_DIR}
