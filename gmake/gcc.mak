@@ -222,7 +222,7 @@ endif
 #endif
 
 ifndef EXACT_OPTIONS
-CXXFLAGS += -std=gnu++0x ${EXTRA_CXXFLAGS}
+CXXFLAGS += -std=gnu++1y ${EXTRA_CXXFLAGS}
 else
 CXXFLAGS += ${EXTRA_CXXFLAGS}
 endif
