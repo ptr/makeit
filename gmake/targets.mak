@@ -19,6 +19,12 @@
 #
 # obj/gcc/so/ebc28af801846844e4024f299405a1c4/test.o:	src/test.cc | obj/gcc/so/ebc28af801846844e4024f299405a1c4
 # 	$(COMPILE.cc) $(OUTPUT_OPTION) $<
+#
+# Each rule will be generated only once (for first target).
+# This allow avoid overriding recipes. Reciept is treated as unique
+# if make variable with name expressed as MD5 hash of target
+# (obj/gcc/so/ebc28af801846844e4024f299405a1c4/test.o),
+# was not defined before.
 # 
 # The hash string is MD5 hash from "src/" (directory of source file)
 # The usage is like:
@@ -30,9 +36,15 @@ define derive_rule
 OUTPUT_DIRS += $(1)
 $(5) += $(1)$(basename $(notdir $(2)))$(3)
 
+ifndef $(shell echo "$(1)$(basename $(notdir $(2)))$(3)" | md5sum | cut -f1 -d ' ' | tr -d '\n\r')
 $(1)$(basename $(notdir $(2)))$(3):	$(2) | $(1); $(4)
+endif
+$(shell echo "$(1)$(basename $(notdir $(2)))$(3)" | md5sum | cut -f1 -d ' ' | tr -d '\n\r') := 1
 endef
 
+define derive_rule_clean
+undefine $(shell echo "$(1)$(basename $(notdir $(2)))$(3)" | md5sum | cut -f1 -d ' ' | tr -d '\n\r')
+endef
 # C++
 
 $(foreach f,$(SRC_CC) $(SRC_CPP) $(SRC_CXX),$(eval $(call derive_rule,$(if $(OUTPUT_DIR),$(OUTPUT_DIR)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.o,$$(COMPILE.cc) $$(OUTPUT_OPTION) $$<,OBJ)))
@@ -140,8 +152,15 @@ _$(1)C_SOURCES_ONLY := true
 endif
 endef
 
+define prog_clean_
+$$(foreach f,$$($(1)SRC_CC) $$($(1)SRC_CPP) $$($(1)SRC_CXX) $$($(1)SRC_C) $$($(1)SRC_S) $$($(1)SRC_SPP),$$(eval $$(call derive_rule_clean,$$(if $$(OUTPUT_DIR),$$(OUTPUT_DIR)/)$$(if $$(patsubst ./%,%,$$(dir $$(f))),$$(shell echo $$(dir $$(f)) | md5sum | cut -f1 -d' ')/),$$(f),.o)))
+endef
+
 # $(eval $(call prog_,))
 $(foreach prg,$(PRGNAMES) $(LIBNAMES),$(eval $(call prog_,$(prg)_)))
+
+$(foreach f,$(SRC_CC) $(SRC_CPP) $(SRC_CXX) $(SRC_C) $(SRC_S) $(SRC_SPP),$(eval $(call derive_rule_clean,$(if $(OUTPUT_DIR),$(OUTPUT_DIR)/)$(if $(patsubst ./%,%,$(dir $(f))),$(shell echo $(dir $(f)) | md5sum | cut -f1 -d' ')/),$(f),.o)))
+$(foreach prg,$(PRGNAMES) $(LIBNAMES),$(eval $(call prog_clean_,$(prg)_)))
 
 define pdf_
 OUTPUT_DIRS += ${OUTPUT_DIR}
