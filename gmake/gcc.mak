@@ -1,6 +1,6 @@
 # -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016, 2017
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -32,16 +32,24 @@ RC := windres
 endif
 
 ifdef TARGET_OS
+_TARGET_PREFIX := ${TARGET_OS}-
+endif
+
+ifdef TARGET_CROSS
+_TARGET_PREFIX := ${TARGET_CROSS}-
+endif
+
 ifndef _FORCE_CXX
-CXX := ${TARGET_OS}-${CXX}
+CXX := ${_TARGET_PREFIX}${CXX}
 endif
 ifndef _FORCE_CC
-CC := ${TARGET_OS}-${CC}
+CC := ${_TARGET_PREFIX}${CC}
 endif
 ifndef _FORCE_AS
-AS := ${TARGET_OS}-${AS}
+AS := ${_TARGET_PREFIX}${AS}
 endif
-endif
+
+undefine _TARGET_PREFIX
 
 ifndef CXX_VERSION
 CXX_VERSION := $(shell PATH=${PATH} ${CXX} -dumpversion)
