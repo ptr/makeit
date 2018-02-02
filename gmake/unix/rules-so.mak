@@ -49,11 +49,11 @@ endef
 define do_so_links
 OUTPUT_DIRS += $$(OUTPUT_DIR$(1))
 
-$${SO_NAME_OUT$(1)xxx}:	$$(OBJ$(1)) $${START_OBJ$(1)} $${END_OBJ$(1)} $$(LIBSDEP) | $$(OUTPUT_DIR$(1))
+$${SO_NAME_OUT$(1)xxx}:	$$(OBJ$(1)) $${START_OBJ$(1)} $${END_OBJ$(1)} $$(LIBSDEP$(1)) | $$(OUTPUT_DIR$(1))
 ifeq ("${_C_SOURCES_ONLY}","")
-	$$(LINK.cc) $(call so_name,$${SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${START_OBJ$(1)} $$(OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ$(1)}
+	$$(LINK.cc) $(call so_name,$${SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${START_OBJ$(1)} $$(OBJ$(1)) $$(LDLIBS$(1)) $${STDLIBS} $${END_OBJ$(1)}
 else
-	$$(LINK.c) $(call so_name,$${SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${START_OBJ$(1)} $$(OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${END_OBJ$(1)}
+	$$(LINK.c) $(call so_name,$${SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${START_OBJ$(1)} $$(OBJ$(1)) $$(LDLIBS$(1)) $${STDLIBS} $${END_OBJ$(1)}
 endif
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${SO_NAME$(1)xx},$${SO_NAME$(1)xxx})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${SO_NAME$(1)x},$${SO_NAME$(1)xx})
@@ -63,11 +63,11 @@ endef
 define do_so_links_m
 OUTPUT_DIRS += $$(OUTPUT_DIR$(1))
 
-$${$(2)_SO_NAME_OUT$(1)xxx}:	$$($(2)_OBJ$(1)) $${$(2)_START_OBJ$(1)} $${$(2)_END_OBJ$(1)} $$(LIBSDEP) | $$(OUTPUT_DIR$(1))
+$${$(2)_SO_NAME_OUT$(1)xxx}:	$$($(2)_OBJ$(1)) $${$(2)_START_OBJ$(1)} $${$(2)_END_OBJ$(1)} $$(LIBSDEP$(1)) | $$(OUTPUT_DIR$(1))
 ifeq ("$${_$(2)_C_SOURCES_ONLY}","")
-	$$(LINK.cc) $(call so_name,$${$(2)_SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${$(2)_START_OBJ$(1)} $$($(2)_OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${$(2)_END_OBJ$(1)}
+	$$(LINK.cc) $(call so_name,$${$(2)_SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${$(2)_START_OBJ$(1)} $$($(2)_OBJ$(1)) $$($(2)_LDLIBS$(1)) $${STDLIBS} $${$(2)_END_OBJ$(1)}
 else
-	$$(LINK.c) $(call so_name,$${$(2)_SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${$(2)_START_OBJ$(1)} $$($(2)_OBJ$(1)) $$(LDLIBS) $${STDLIBS} $${$(2)_END_OBJ$(1)}
+	$$(LINK.c) $(call so_name,$${$(2)_SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${$(2)_START_OBJ$(1)} $$($(2)_OBJ$(1)) $$($(2)_LDLIBS$(1)) $${STDLIBS} $${$(2)_END_OBJ$(1)}
 endif
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${$(2)_SO_NAME$(1)xx},$${$(2)_SO_NAME$(1)xxx})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${$(2)_SO_NAME$(1)x},$${$(2)_SO_NAME$(1)xx})
