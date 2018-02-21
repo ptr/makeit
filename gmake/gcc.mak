@@ -91,12 +91,13 @@ LINK_OUTPUT_OPTION = ${OUTPUT_OPTION}
 CPPFLAGS = $(DEFS) $(INCLUDES)
 
 ifeq ($(OSNAME), windows)
+EXCEPTIONS_FLAGS = -fexceptions
 RCFLAGS = --include-dir=${STLPORT_INCLUDE_DIR} --output-format coff -DCOMP=gcc
 release-shared : RCFLAGS += -DBUILD_INFOS=-O2
 dbg-shared : RCFLAGS += -DBUILD=g -DBUILD_INFOS=-g
 stldbg-shared : RCFLAGS += -DBUILD=stlg -DBUILD_INFOS="-g -D_STLP_DEBUG"
 RC_OUTPUT_OPTION = -o $@
-CXXFLAGS = -Wall -Wsign-promo -Wcast-qual -fexceptions
+CXXFLAGS = -Wall -Wsign-promo -Wcast-qual $(EXCEPTIONS_FLAGS)
 ifeq ($(OSREALNAME), mingw)
 CCFLAGS += -mthreads
 CFLAGS += -mthreads
@@ -121,19 +122,21 @@ endif
 
 ifeq ($(OSNAME),sunos)
 THREAD_FLAGS = -pthreads
+EXCEPTIONS_FLAGS = -fexceptions
 CCFLAGS = $(THREAD_FLAGS) $(OPT)
 CFLAGS = $(THREAD_FLAGS) $(OPT)
 # CXXFLAGS = -pthreads -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = $(THREAD_FLAGS) -fexceptions $(OPT)
+CXXFLAGS = $(THREAD_FLAGS) $(EXCEPTIONS_FLAGS) $(OPT)
 endif
 
 ifeq ($(OSNAME),linux)
 THREAD_FLAGS = -pthread
+EXCEPTIONS_FLAGS = -fexceptions
 ifndef EXACT_OPTIONS
 CCFLAGS = $(THREAD_FLAGS) $(OPT)
 CFLAGS = $(THREAD_FLAGS) $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = $(THREAD_FLAGS) -fexceptions $(OPT)
+CXXFLAGS = $(THREAD_FLAGS) $(EXCEPTIONS_FLAGS) $(OPT)
 else
 CCFLAGS = $(OPT)
 CFLAGS = $(OPT)
@@ -143,11 +146,12 @@ endif
 
 ifeq ($(OSNAME),openbsd)
 THREAD_FLAGS = -pthread
+EXCEPTIONS_FLAGS = -fexceptions
 ifndef EXACT_OPTIONS
 CCFLAGS = $(THREAD_FLAGS) $(OPT)
 CFLAGS = $(THREAD_FLAGS) $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = $(THREAD_FLAGS) -fexceptions $(OPT)
+CXXFLAGS = $(THREAD_FLAGS) $(EXCEPTIONS_FLAGS) $(OPT)
 else
 CCFLAGS = $(OPT)
 CFLAGS = $(OPT)
@@ -157,12 +161,13 @@ endif
 
 ifeq ($(OSNAME),freebsd)
 THREAD_FLAGS = -pthread
+EXCEPTIONS_FLAGS = -fexceptions
 ifndef EXACT_OPTIONS
 CCFLAGS = $(THREAD_FLAGS) $(OPT)
 CFLAGS = $(THREAD_FLAGS) $(OPT)
 DEFS += -D_REENTRANT
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = $(THREAD_FLAGS) -fexceptions $(OPT)
+CXXFLAGS = $(THREAD_FLAGS) $(EXCEPTIONS_FLAGS) $(OPT)
 else
 CCFLAGS = $(OPT)
 CFLAGS = $(OPT)
@@ -186,6 +191,7 @@ endif
 
 ifeq ($(OSNAME),hp-ux)
 THREAD_FLAGS = -pthread
+EXCEPTIONS_FLAGS = -fexceptions
 ifndef EXACT_OPTIONS
 ifneq ($(M_ARCH),ia64)
 release-static : OPT += -fno-reorder-blocks
@@ -194,7 +200,7 @@ endif
 CCFLAGS = $(THREAD_FLAGS) $(OPT)
 CFLAGS = $(THREAD_FLAGS) $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = $(THREAD_FLAGS) -fexceptions $(OPT)
+CXXFLAGS = $(THREAD_FLAGS) $(EXCEPTIONS_FLAGS) $(OPT)
 else
 CCFLAGS = $(OPT)
 CFLAGS = $(OPT)
