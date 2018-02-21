@@ -1,4 +1,4 @@
-# -*- makefile-gmake -*-
+# -*- GNUmakefile -*-
 #
 # Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016, 2017
 # Petr Ovtchenkov
@@ -120,18 +120,20 @@ endif
 endif
 
 ifeq ($(OSNAME),sunos)
-CCFLAGS = -pthreads $(OPT)
-CFLAGS = -pthreads $(OPT)
+THREAD_FLAGS = -pthreads
+CCFLAGS = $(THREAD_FLAGS) $(OPT)
+CFLAGS = $(THREAD_FLAGS) $(OPT)
 # CXXFLAGS = -pthreads -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = -pthreads  -fexceptions $(OPT)
+CXXFLAGS = $(THREAD_FLAGS) -fexceptions $(OPT)
 endif
 
 ifeq ($(OSNAME),linux)
+THREAD_FLAGS = -pthread
 ifndef EXACT_OPTIONS
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
+CCFLAGS = $(THREAD_FLAGS) $(OPT)
+CFLAGS = $(THREAD_FLAGS) $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = -pthread -fexceptions $(OPT)
+CXXFLAGS = $(THREAD_FLAGS) -fexceptions $(OPT)
 else
 CCFLAGS = $(OPT)
 CFLAGS = $(OPT)
@@ -140,11 +142,12 @@ endif
 endif
 
 ifeq ($(OSNAME),openbsd)
+THREAD_FLAGS = -pthread
 ifndef EXACT_OPTIONS
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
+CCFLAGS = $(THREAD_FLAGS) $(OPT)
+CFLAGS = $(THREAD_FLAGS) $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = -pthread -fexceptions $(OPT)
+CXXFLAGS = $(THREAD_FLAGS) -fexceptions $(OPT)
 else
 CCFLAGS = $(OPT)
 CFLAGS = $(OPT)
@@ -153,12 +156,13 @@ endif
 endif
 
 ifeq ($(OSNAME),freebsd)
+THREAD_FLAGS = -pthread
 ifndef EXACT_OPTIONS
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
+CCFLAGS = $(THREAD_FLAGS) $(OPT)
+CFLAGS = $(THREAD_FLAGS) $(OPT)
 DEFS += -D_REENTRANT
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = -pthread -fexceptions $(OPT)
+CXXFLAGS = $(THREAD_FLAGS) -fexceptions $(OPT)
 else
 CCFLAGS = $(OPT)
 CFLAGS = $(OPT)
@@ -181,15 +185,16 @@ endif
 endif
 
 ifeq ($(OSNAME),hp-ux)
+THREAD_FLAGS = -pthread
 ifndef EXACT_OPTIONS
 ifneq ($(M_ARCH),ia64)
 release-static : OPT += -fno-reorder-blocks
 release-shared : OPT += -fno-reorder-blocks
 endif
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
+CCFLAGS = $(THREAD_FLAGS) $(OPT)
+CFLAGS = $(THREAD_FLAGS) $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = -pthread -fexceptions $(OPT)
+CXXFLAGS = $(THREAD_FLAGS) -fexceptions $(OPT)
 else
 CCFLAGS = $(OPT)
 CFLAGS = $(OPT)
