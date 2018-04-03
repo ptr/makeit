@@ -1,6 +1,6 @@
 # -*- GNUmakefile -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016, 2017
+# Copyright (c) 1997-1999, 2002-2018
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -78,7 +78,6 @@ endif
 endif
 
 DEFS ?=
-OPT ?=
 
 ifdef WITHOUT_STLPORT
 INCLUDES =
@@ -193,10 +192,6 @@ ifeq ($(OSNAME),hp-ux)
 THREAD_FLAGS = -pthread
 EXCEPTIONS_FLAGS = -fexceptions
 ifndef EXACT_OPTIONS
-ifneq ($(M_ARCH),ia64)
-release-static : OPT += -fno-reorder-blocks
-release-shared : OPT += -fno-reorder-blocks
-endif
 CCFLAGS = $(THREAD_FLAGS) $(OPT)
 CFLAGS = $(THREAD_FLAGS) $(OPT)
 # CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
@@ -261,16 +256,25 @@ stldbg-static-dep : DEFS += -D_STLP_DEBUG
 stldbg-shared-dep : DEFS += -D_STLP_DEBUG
 
 # optimization and debug compiler flags
-release-static : OPT += -O2
-release-shared : OPT += -O2
+release-static : OPT ?= -O2
+release-shared : OPT ?= -O2
 
-dbg-static : OPT += -g
-dbg-shared : OPT += -g
+ifndef EXACT_OPTIONS
+ifeq ($(OSNAME),hp-ux)
+ifneq ($(M_ARCH),ia64)
+release-static : OPT += -fno-reorder-blocks
+release-shared : OPT += -fno-reorder-blocks
+endif
+endif
+endif
+
+dbg-static : OPT ?= -g
+dbg-shared : OPT ?= -g
 #dbg-static-dep : OPT += -g
 #dbg-shared-dep : OPT += -g
 
-stldbg-static : OPT += -g
-stldbg-shared : OPT += -g
+stldbg-static : OPT ?= -g
+stldbg-shared : OPT ?= -g
 #stldbg-static-dep : OPT += -g
 #stldbg-shared-dep : OPT += -g
 
