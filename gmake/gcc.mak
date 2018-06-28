@@ -78,6 +78,7 @@ endif
 endif
 
 DEFS ?=
+OPT ?=
 
 ifdef WITHOUT_STLPORT
 INCLUDES =
@@ -256,8 +257,21 @@ stldbg-static-dep : DEFS += -D_STLP_DEBUG
 stldbg-shared-dep : DEFS += -D_STLP_DEBUG
 
 # optimization and debug compiler flags
-release-static : OPT ?= -O2
-release-shared : OPT ?= -O2
+
+ifeq ($(OPT),)
+release-static : OPT += -O2
+release-shared : OPT += -O2
+
+dbg-static : OPT += -g
+dbg-shared : OPT += -g
+#dbg-static-dep : OPT += -g
+#dbg-shared-dep : OPT += -g
+
+stldbg-static : OPT += -g
+stldbg-shared : OPT += -g
+#stldbg-static-dep : OPT += -g
+#stldbg-shared-dep : OPT += -g
+endif
 
 ifndef EXACT_OPTIONS
 ifeq ($(OSNAME),hp-ux)
@@ -267,16 +281,6 @@ release-shared : OPT += -fno-reorder-blocks
 endif
 endif
 endif
-
-dbg-static : OPT ?= -g
-dbg-shared : OPT ?= -g
-#dbg-static-dep : OPT += -g
-#dbg-shared-dep : OPT += -g
-
-stldbg-static : OPT ?= -g
-stldbg-shared : OPT ?= -g
-#stldbg-static-dep : OPT += -g
-#stldbg-shared-dep : OPT += -g
 
 # dependency output parser (dependencies collector)
 
