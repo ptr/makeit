@@ -58,6 +58,9 @@ all:	$(ALL_TAGS)
 ifndef OSNAME
 # identify OS and build date
 include ${RULESBASE}/gmake/sysid.mak
+else ifdef PARALLEL
+# prevent from setting -jN later
+PARALLEL := PARALLEL=
 endif
 # OS-specific definitions, like ln, install, etc. (guest host)
 include ${RULESBASE}/gmake/$(BUILD_OSNAME)/sys.mak
@@ -168,11 +171,6 @@ BUILD_OSREL := ${BUILD_OSREL}
 BUILD_M_ARCH := ${BUILD_M_ARCH}
 BUILD_P_ARCH := ${BUILD_P_ARCH}
 SU := ${SU}
-ifndef NOPARALLEL
-ifndef PARALLEL
-PARALLEL := ${PARALLEL}
-endif
-endif
 
 # $(BUILD_OSNAME)/sys.mak
 
