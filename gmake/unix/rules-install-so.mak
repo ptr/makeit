@@ -87,20 +87,20 @@ install-strip:	$(INSTALL_STRIP_TAGS)
 
 # Workaround for GNU make 3.80; see comments in rules-so.mak
 define do_install_so_links
-$${INSTALL_LIB_DIR$(1)}/$${SO_NAME$(1)xxx}:	$${SO_NAME_OUT$(1)xxx} | $${INSTALL_LIB_DIR$(1)}
-	$$(INSTALL_SO) $${SO_NAME_OUT$(1)xxx} $$(INSTALL_LIB_DIR$(1))
-	@$(call do_so_links_1,$$(INSTALL_LIB_DIR$(1)),$${SO_NAME$(1)xx},$${SO_NAME$(1)xxx})
-	@$(call do_so_links_1,$$(INSTALL_LIB_DIR$(1)),$${SO_NAME$(1)x},$${SO_NAME$(1)xx})
-	@$(call do_so_links_1,$$(INSTALL_LIB_DIR$(1)),$${SO_NAME$(1)},$${SO_NAME$(1)x})
+$$(DESTDIR)$${INSTALL_LIB_DIR$(1)}/$${SO_NAME$(1)xxx}:	$${SO_NAME_OUT$(1)xxx} | $$(DESTDIR)$${INSTALL_LIB_DIR$(1)}
+	$$(INSTALL_SO) $${SO_NAME_OUT$(1)xxx} $$(DESTDIR)$$(INSTALL_LIB_DIR$(1))
+	@$(call do_so_links_1,$$(DESTDIR)$$(INSTALL_LIB_DIR$(1)),$${SO_NAME$(1)xx},$${SO_NAME$(1)xxx})
+	@$(call do_so_links_1,$$(DESTDIR)$$(INSTALL_LIB_DIR$(1)),$${SO_NAME$(1)x},$${SO_NAME$(1)xx})
+	@$(call do_so_links_1,$$(DESTDIR)$$(INSTALL_LIB_DIR$(1)),$${SO_NAME$(1)},$${SO_NAME$(1)x})
 endef
 
 define do_install_so_links_m
 ifdef INSTALL_LIB_DIR$(1)
-$${INSTALL_LIB_DIR$(1)}/$${$(2)_SO_NAME$(1)xxx}:	$${$(2)_SO_NAME_OUT$(1)xxx} | $${INSTALL_LIB_DIR$(1)}
-	$$(INSTALL_SO) $${$(2)_SO_NAME_OUT$(1)xxx} $$(INSTALL_LIB_DIR$(1))
-	@$(call do_so_links_1,$$(INSTALL_LIB_DIR$(1)),$${$(2)_SO_NAME$(1)xx},$${$(2)_SO_NAME$(1)xxx})
-	@$(call do_so_links_1,$$(INSTALL_LIB_DIR$(1)),$${$(2)_SO_NAME$(1)x},$${$(2)_SO_NAME$(1)xx})
-	@$(call do_so_links_1,$$(INSTALL_LIB_DIR$(1)),$${$(2)_SO_NAME$(1)},$${$(2)_SO_NAME$(1)x})
+$$(DESTDIR)$${INSTALL_LIB_DIR$(1)}/$${$(2)_SO_NAME$(1)xxx}:	$${$(2)_SO_NAME_OUT$(1)xxx} | $$(DESTDIR)$${INSTALL_LIB_DIR$(1)}
+	$$(INSTALL_SO) $${$(2)_SO_NAME_OUT$(1)xxx} $$(DESTDIR)$$(INSTALL_LIB_DIR$(1))
+	@$(call do_so_links_1,$$(DESTDIR)$$(INSTALL_LIB_DIR$(1)),$${$(2)_SO_NAME$(1)xx},$${$(2)_SO_NAME$(1)xxx})
+	@$(call do_so_links_1,$$(DESTDIR)$$(INSTALL_LIB_DIR$(1)),$${$(2)_SO_NAME$(1)x},$${$(2)_SO_NAME$(1)xx})
+	@$(call do_so_links_1,$$(DESTDIR)$$(INSTALL_LIB_DIR$(1)),$${$(2)_SO_NAME$(1)},$${$(2)_SO_NAME$(1)x})
 endif
 endef
 
@@ -139,38 +139,54 @@ $(eval $(call do_install_so_links_wk,_STLDBG))
 # endif
 
 define install_shared_rules
-install-release-shared::	$(INSTALL_LIB_DIR)/${$(1)_SO_NAMExxx}
-	${POST_INSTALL}
+install-release-shared::	$$(DESTDIR)$$(INSTALL_LIB_DIR)/$${$(1)_SO_NAMExxx}
+	$${POST_INSTALL}
 
-install-strip-shared::	$(INSTALL_LIB_DIR)/${$(1)_SO_NAMExxx}
-	${STRIP} ${_SO_STRIP_OPTION} $(INSTALL_LIB_DIR)/${$(1)_SO_NAMExxx}
-	${POST_INSTALL}
+install-strip-shared::	$$(DESTDIR)$$(INSTALL_LIB_DIR)/$${$(1)_SO_NAMExxx}
+	${STRIP} ${_SO_STRIP_OPTION} $$(DESTDIR)$$(INSTALL_LIB_DIR)/$${$(1)_SO_NAMExxx}
+	$${POST_INSTALL}
 
-install-dbg-shared::	$(INSTALL_LIB_DIR_DBG)/${$(1)_SO_NAME_DBGxxx}
-	${POST_INSTALL_DBG}
+install-dbg-shared::	$$(DESTDIR)$$(INSTALL_LIB_DIR_DBG)/$${$(1)_SO_NAME_DBGxxx}
+	$${POST_INSTALL_DBG}
 
 ifndef WITHOUT_STLPORT
-install-stldbg-shared::	$(INSTALL_LIB_DIR_STLDBG)/${$(1)_SO_NAME_STLDBGxxx}
-	${POST_INSTALL_STLDBG}
+install-stldbg-shared::	$$(DESTDIR)$$(INSTALL_LIB_DIR_STLDBG)/$${$(1)_SO_NAME_STLDBGxxx}
+	$${POST_INSTALL_STLDBG}
 endif
 endef
 
 ifneq (${LIBNAME},)
-install-release-shared::	$(INSTALL_LIB_DIR)/${SO_NAMExxx}
+install-release-shared::	$(DESTDIR)$(INSTALL_LIB_DIR)/${SO_NAMExxx}
 	${POST_INSTALL}
 
-install-strip-shared::	$(INSTALL_LIB_DIR)/${SO_NAMExxx}
-	${STRIP} ${_SO_STRIP_OPTION} $(INSTALL_LIB_DIR)/${SO_NAMExxx}
+install-strip-shared::	$(DESTDIR)$(INSTALL_LIB_DIR)/${SO_NAMExxx}
+	${STRIP} ${_SO_STRIP_OPTION} $(DESTDIR)$(INSTALL_LIB_DIR)/${SO_NAMExxx}
 	${POST_INSTALL}
 
-install-dbg-shared::	$(INSTALL_LIB_DIR_DBG)/${SO_NAME_DBGxxx}
+install-dbg-shared::	$(DESTDIR)$(INSTALL_LIB_DIR_DBG)/${SO_NAME_DBGxxx}
 	${POST_INSTALL_DBG}
 
 ifndef WITHOUT_STLPORT
-install-stldbg-shared::	$(INSTALL_LIB_DIR_STLDBG)/${SO_NAME_STLDBGxxx}
+install-stldbg-shared::	$(DESTDIR)$(INSTALL_LIB_DIR_STLDBG)/${SO_NAME_STLDBGxxx}
 	${POST_INSTALL_STLDBG}
 endif
 endif
+
+$(DESTDIR)$(INSTALL_LIB_DIR):
+	${INSTALL} -d -m 0755 $@
+
+ifneq ($(INSTALL_LIB_DIR),$(INSTALL_LIB_DIR_DBG))
+$(DESTDIR)$(INSTALL_LIB_DIR_DBG):
+	${INSTALL} -d -m 0755 $@
+endif
+
+ifeq ($(INSTALL_LIB_DIR),$(INSTALL_LIB_DIR_DBG))
+install-dbg-shared:	INSTALL_DBG := 1
+endif
+
+install-strip:	INSTALL_STRIP = 1
+
+install-strip-shared:	INSTALL_STRIP = 1
 
 $(foreach l,$(LIBNAMES),$(eval $(call install_shared_rules,$(l))))
 
