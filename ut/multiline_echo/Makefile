@@ -1,4 +1,4 @@
-# -*- Makefile -*-
+# -*- Makefile-gmake -*-
 
 RULESBASE := ../..
 
@@ -16,4 +16,6 @@ check:
 	$(call multiline_echo,${my_config}) > my_config
 	cmp my_config ref_config && rm my_config
 
-.PHONY:	check
+clean::
+
+.PHONY:	check clean

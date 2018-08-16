@@ -1,4 +1,4 @@
-# -*- Makefile -*- Time-stamp: <2011-08-22 19:10:10 ptr>
+# -*- Makefile-gmake -*-
 
 RULESBASE := ../..
 
@@ -17,5 +17,7 @@ check0:
 check:	check0
 	$(call doinsubdirs,${SUBDIRS},DESTDIR=${DESTDIR})
 
-.PHONY:	check0 check
+clean::
+
+.PHONY:	check0 check clean
 
