@@ -1,6 +1,6 @@
 # -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016, 2017
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016-2108
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -92,11 +92,17 @@ ifneq ($(OSNAME),windows)
 release-shared:	STLPORT_LIB = -lstlport
 dbg-shared:	STLPORT_LIB = -lstlportg
 stldbg-shared:	STLPORT_LIB = -lstlportstlg
+install-release-shared:	STLPORT_LIB = -lstlport
+install-dbg-shared:	STLPORT_LIB = -lstlportg
+install-stldbg-shared:	STLPORT_LIB = -lstlportstlg
 else
 LIB_VERSION = ${LIBMAJOR}.${LIBMINOR}
 release-shared:	STLPORT_LIB = -lstlport.${LIB_VERSION}
 dbg-shared:	STLPORT_LIB = -lstlportg.${LIB_VERSION}
 stldbg-shared:	STLPORT_LIB = -lstlportstlg.${LIB_VERSION}
+install-release-shared:	STLPORT_LIB = -lstlport.${LIB_VERSION}
+install-dbg-shared:	STLPORT_LIB = -lstlportg.${LIB_VERSION}
+install-stldbg-shared:	STLPORT_LIB = -lstlportstlg.${LIB_VERSION}
 endif
 else
 # STLPORT_LIB_DIR not empty
@@ -104,11 +110,17 @@ ifneq ($(OSNAME),windows)
 release-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlport
 dbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportg
 stldbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportstlg
+install-release-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlport
+install-dbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportg
+install-stldbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportstlg
 else
 LIB_VERSION = ${LIBMAJOR}.${LIBMINOR}
 release-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlport.${LIB_VERSION}
 dbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportg.${LIB_VERSION}
 stldbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportstlg.${LIB_VERSION}
+install-release-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlport.${LIB_VERSION}
+install-dbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportg.${LIB_VERSION}
+install-stldbg-shared:	STLPORT_LIB = -L${STLPORT_LIB_DIR} -lstlportstlg.${LIB_VERSION}
 endif
 endif
 
@@ -252,15 +264,29 @@ endif
 endif
 
 ifeq ($(OSNAME),hp-ux)
-dbg-shared:	LDFLAGS += -shared -Wl,-dynamic -Wl,+h$(SO_NAME_DBGxx)
-stldbg-shared:	LDFLAGS += -shared -Wl,-dynamic -Wl,+h$(SO_NAME_STLDBGxx)
-release-shared:	LDFLAGS += -shared -Wl,-dynamic -Wl,+h$(SO_NAMExx)
+define so_name
+-Wl,-dynamic -Wl,+h$(1)
+endef
+
+dbg-shared:	LDFLAGS += -shared
+stldbg-shared:	LDFLAGS += -shared
+release-shared:	LDFLAGS += -shared
+install-dbg-shared:	LDFLAGS += -shared
+install-stldbg-shared:	LDFLAGS += -shared
+install-release-shared:	LDFLAGS += -shared
 endif
 
 ifeq ($(OSNAME),sunos)
-dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
+define so_name
+-Wl,-h$(1)
+endef
+
+dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+release-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),linux)
@@ -271,6 +297,9 @@ endef
 dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
 stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
 release-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),windows)
@@ -288,9 +317,16 @@ release-static:	LDFLAGS += -static
 endif
 
 ifeq ($(OSNAME),freebsd)
-dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAMExx) ${NOSTDLIB}
+define so_name
+-Wl,-h$(1)
+endef
+
+dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+release-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),darwin)
@@ -306,7 +342,14 @@ release-static:	LDFLAGS += -staticlib
 endif
 
 ifeq ($(OSNAME),openbsd)
-dbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_DBGxx) ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAME_STLDBGxx) ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared -Wl,-soname -Wl,$(SO_NAMExx) ${NOSTDLIB}
+define so_name
+-Wl,-soname -Wl,$(1)
+endef
+
+dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+release-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
 endif
