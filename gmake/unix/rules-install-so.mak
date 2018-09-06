@@ -191,27 +191,27 @@ install-strip-shared:	INSTALL_STRIP = 1
 $(foreach l,$(LIBNAMES),$(eval $(call install_shared_rules,$(l))))
 
 define do_install_headers
-if [ ! -d $(INSTALL_HDR_DIR) ]; then \
-  $(INSTALL_D) $(INSTALL_HDR_DIR) || { echo "Can't create $(INSTALL_HDR_DIR)"; exit 1; }; \
+if [ ! -d $(DESTDIR)$(INSTALL_HDR_DIR) ]; then \
+  $(INSTALL_D) $(DESTDIR)$(INSTALL_HDR_DIR) || { echo "Can't create $(DESTDIR)$(INSTALL_HDR_DIR)"; exit 1; }; \
 fi; \
 for dd in $(HEADERS_BASE); do \
   d=`dirname $$dd`; \
   h=`basename $$dd`; \
   f=`cd $$d; find $$h \( -wholename "*/.svn" -prune \) -o \( -type d -print \)`; \
   for ddd in $$f; do \
-    if [ ! -d $(INSTALL_HDR_DIR)/$$ddd ]; then \
-      $(INSTALL_D) $(INSTALL_HDR_DIR)/$$ddd || { echo "Can't create $(INSTALL_HDR_DIR)/$$ddd"; exit 1; }; \
+    if [ ! -d $(DESTDIR)$(INSTALL_HDR_DIR)/$$ddd ]; then \
+      $(INSTALL_D) $(DESTDIR)$(INSTALL_HDR_DIR)/$$ddd || { echo "Can't create $(DESTDIR)$(INSTALL_HDR_DIR)/$$ddd"; exit 1; }; \
     fi; \
   done; \
   f=`find $$dd \( -wholename "*/.svn*" -o -name "*~" -o -name "*.bak" \) -prune -o \( -type f -print \)`; \
   for ff in $$f; do \
-    h=`echo $$ff | sed -e "s|$$d|$(INSTALL_HDR_DIR)|"`; \
+    h=`echo $$ff | sed -e "s|$$d|$(DESTDIR)$(INSTALL_HDR_DIR)|"`; \
     $(INSTALL_F) $$ff $$h; \
   done; \
 done; \
 for f in $(HEADERS); do \
   h=`basename $$f`; \
-  $(INSTALL_F) $$f $(INSTALL_HDR_DIR)/$$h || { echo "Can't install $(INSTALL_HDR_DIR)/$$h"; exit 1; }; \
+  $(INSTALL_F) $$f $(DESTDIR)$(INSTALL_HDR_DIR)/$$h || { echo "Can't install $(DESTDIR)$(INSTALL_HDR_DIR)/$$h"; exit 1; }; \
 done
 endef
 
