@@ -27,13 +27,13 @@ INSTALL_PRGNAMES_DBG += $$(DESTDIR)$$(INSTALL_BIN_DIR_DBG)/$${INSTALL_$(1)_PRGNA
 ifndef INSTALL_DBG
 ifndef INSTALL_STRIP
 $$(DESTDIR)$$(INSTALL_BIN_DIR)/$${INSTALL_$(1)_PRGNAME}:	release-shared | $$(DESTDIR)$$(INSTALL_BIN_DIR)
-	if [ ! -e $$@ ] || cmp $$@ $${$(1)_PRG} ; then \
+	if [ ! -e $$@ ] || ! cmp -s $$@ $${$(1)_PRG} ; then \
 	  $$(INSTALL_EXE) $${$(1)_PRG} $$@ && \
 	  touch $$(PRE_OUTPUT_DIR)/.install; \
 	fi
 else
 $$(DESTDIR)$$(INSTALL_BIN_DIR)/$${INSTALL_$(1)_PRGNAME}:	release-shared | $$(DESTDIR)$$(INSTALL_BIN_DIR)
-	if [ ! -e $$@ ] || cmp $$@ $${$(1)_PRG} ; then \
+	if [ ! -e $$@ ] || ! cmp -s $$@ $${$(1)_PRG} ; then \
 	  $${STRIP} $${_INSTALL_STRIP_OPTION} $$@ && \
 	  $$(INSTALL_EXE) $${$(1)_PRG} $$@ && \
 	  touch $$(PRE_OUTPUT_DIR)/.install; \
@@ -41,7 +41,7 @@ $$(DESTDIR)$$(INSTALL_BIN_DIR)/$${INSTALL_$(1)_PRGNAME}:	release-shared | $$(DES
 endif
 else
 $$(DESTDIR)$$(INSTALL_BIN_DIR)/$${INSTALL_$(1)_PRGNAME}:	dbg-shared | $$(DESTDIR)$$(INSTALL_BIN_DIR)
-	if [ ! -e $$@ ] || cmp $$@ $${$(1)_PRG_DBG} ; then \
+	if [ ! -e $$@ ] || ! cmp -s $$@ $${$(1)_PRG_DBG} ; then \
 	  $$(INSTALL_EXE) $${$(1)_PRG_DBG} $$@ && \
 	  touch $$(PRE_OUTPUT_DIR)/.install; \
 	fi
@@ -49,7 +49,7 @@ endif
 
 ifneq ($(INSTALL_BIN_DIR),$(INSTALL_BIN_DIR_DBG))
 $$(DESTDIR)$$(INSTALL_BIN_DIR_DBG)/$${INSTALL_$(1)_PRGNAME}:	dbg-shared | $$(DESTDIR)$$(INSTALL_BIN_DIR_DBG)
-	if [ ! -e $$@ ] || cmp $$@ $${$(1)_PRG_DBG} ; then \
+	if [ ! -e $$@ ] || ! cmp -s $$@ $${$(1)_PRG_DBG} ; then \
 	  $$(INSTALL_EXE) $${$(1)_PRG_DBG} $$@ && \
 	  touch $$(PRE_OUTPUT_DIR)/.install; \
 	fi
@@ -100,13 +100,13 @@ INSTALL_PRGNAMES_DBG += $(DESTDIR)$(INSTALL_BIN_DIR_DBG)/${INSTALL_PRGNAME}
 ifndef INSTALL_DBG
 ifndef INSTALL_STRIP
 $(DESTDIR)$(INSTALL_BIN_DIR)/${INSTALL_PRGNAME}:	release-shared | $(DESTDIR)$(INSTALL_BIN_DIR)
-	if [ ! -e $@ ] || cmp $@ ${PRG} ; then \
+	if [ ! -e $@ ] || ! cmp -s $@ ${PRG} ; then \
 	  $(INSTALL_EXE) ${PRG} $@ && \
 	  touch $(PRE_OUTPUT_DIR)/.install; \
 	fi
 else
 $(DESTDIR)$(INSTALL_BIN_DIR)/${INSTALL_PRGNAME}:	release-shared | $(DESTDIR)$(INSTALL_BIN_DIR)
-	if [ ! -e $@ ] || cmp $@ ${PRG} ; then \
+	if [ ! -e $@ ] || ! cmp -s $@ ${PRG} ; then \
 	   ${STRIP} ${_INSTALL_STRIP_OPTION} ${PRG} && \
 	   $(INSTALL_EXE) ${PRG} $@ && \
 	   touch $(PRE_OUTPUT_DIR)/.install; \
@@ -114,7 +114,7 @@ $(DESTDIR)$(INSTALL_BIN_DIR)/${INSTALL_PRGNAME}:	release-shared | $(DESTDIR)$(IN
 endif
 else
 $(DESTDIR)$(INSTALL_BIN_DIR)/${INSTALL_PRGNAME}:	dbg-shared | $(DESTDIR)$(INSTALL_BIN_DIR)
-	if [ ! -e $@ ] || cmp $@ ${PRG_DBG} ; then \
+	if [ ! -e $@ ] || ! cmp -s $@ ${PRG_DBG} ; then \
 	  $(INSTALL_EXE) ${PRG_DBG} $@ && \
 	  touch $(PRE_OUTPUT_DIR)/.install; \
 	fi
@@ -122,7 +122,7 @@ endif
 
 ifneq ($(INSTALL_BIN_DIR),$(INSTALL_BIN_DIR_DBG))
 $(DESTDIR)$(INSTALL_BIN_DIR_DBG)/${INSTALL_PRGNAME}:	dbg-shared | $(DESTDIR)$(INSTALL_BIN_DIR_DBG)
-	if [ ! -e $@ ] || cmp $@ ${PRG_DBG} ; then \
+	if [ ! -e $@ ] || ! cmp -s $@ ${PRG_DBG} ; then \
 	  $(INSTALL_EXE) ${PRG_DBG} $@ && \
 	  touch $(PRE_OUTPUT_DIR)/.install; \
 	fi

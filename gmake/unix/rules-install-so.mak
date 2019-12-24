@@ -206,12 +206,16 @@ for dd in $(HEADERS_BASE); do \
   f=`find $$dd \( -wholename "*/.svn*" -o -name "*~" -o -name "*.bak" \) -prune -o \( -type f -print \)`; \
   for ff in $$f; do \
     h=`echo $$ff | sed -e "s|$$d|$(DESTDIR)$(INSTALL_HDR_DIR)|"`; \
-    $(INSTALL_F) $$ff $$h; \
+    if [ ! -e $$h ] || ! cmp -s $$ff $$h; then \
+      $(INSTALL_F) $$ff $$h; \
+    fi \
   done; \
 done; \
 for f in $(HEADERS); do \
   h=`basename $$f`; \
-  $(INSTALL_F) $$f $(DESTDIR)$(INSTALL_HDR_DIR)/$$h || { echo "Can't install $(DESTDIR)$(INSTALL_HDR_DIR)/$$h"; exit 1; }; \
+  if [ ! -e $(DESTDIR)$(INSTALL_HDR_DIR)/$$h ] || ! cmp -s $$f $(DESTDIR)$(INSTALL_HDR_DIR)/$$h; then \
+    $(INSTALL_F) $$f $(DESTDIR)$(INSTALL_HDR_DIR)/$$h || { echo "Can't install $(DESTDIR)$(INSTALL_HDR_DIR)/$$h"; exit 1; }; \
+  fi \
 done
 endef
 
