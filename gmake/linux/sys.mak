@@ -1,6 +1,6 @@
 # -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016, 2020
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -37,5 +37,5 @@ define _newline
 endef
 
 define multiline_echo
-echo -e '$(call subst,${_newline},\n,${1})'
+echo -e '$(call subst,',\x27,$(call subst,${_newline},\n,${1}))'
 endef

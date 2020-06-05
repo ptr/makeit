@@ -10,6 +10,7 @@ include ${RULESBASE}/gmake/$(BUILD_OSNAME)/sys.mak
 define my_config
 line_one=yes
 line_two=yes
+line_three='in quotes'
 endef
 
 check:
