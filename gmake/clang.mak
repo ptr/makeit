@@ -89,13 +89,6 @@ stldbg-static : DEFS += -D_DEBUG
 endif
 endif
 
-ifeq ($(OSNAME),sunos)
-CCFLAGS = -pthreads $(OPT)
-CFLAGS = -pthreads $(OPT)
-# CXXFLAGS = -pthreads -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = -pthreads  -fexceptions $(OPT)
-endif
-
 ifeq ($(OSNAME),linux)
 CCFLAGS = -pthread $(OPT)
 CFLAGS = -pthread $(OPT)

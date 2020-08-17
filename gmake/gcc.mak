@@ -120,15 +120,6 @@ stldbg-static : DEFS += -D_DEBUG
 endif
 endif
 
-ifeq ($(OSNAME),sunos)
-THREAD_FLAGS = -pthreads
-EXCEPTIONS_FLAGS = -fexceptions
-CCFLAGS = $(THREAD_FLAGS) $(OPT)
-CFLAGS = $(THREAD_FLAGS) $(OPT)
-# CXXFLAGS = -pthreads -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = $(THREAD_FLAGS) $(EXCEPTIONS_FLAGS) $(OPT)
-endif
-
 ifeq ($(OSNAME),linux)
 THREAD_FLAGS = -pthread
 EXCEPTIONS_FLAGS = -fexceptions

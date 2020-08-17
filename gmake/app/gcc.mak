@@ -61,10 +61,6 @@ ifeq ($(OSNAME),netbsd)
 _USE_NOSTDLIB := 1
 endif
 
-ifeq ($(OSNAME),sunos)
-_USE_NOSTDLIB := 1
-endif
-
 ifeq ($(OSNAME),darwin)
 _USE_NOSTDLIB := 1
 endif
@@ -175,12 +171,6 @@ STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -l${PTHR} -lc -lm
 endif
 
 ifeq ($(OSNAME),netbsd)
-#START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
-#END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
-STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm
-endif
-
-ifeq ($(OSNAME),sunos)
 #START_OBJ := $(shell for o in crt1.o crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 #END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm

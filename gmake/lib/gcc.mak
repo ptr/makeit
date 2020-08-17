@@ -72,10 +72,6 @@ ifeq ($(OSNAME),netbsd)
 _USE_NOSTDLIB := 1
 endif
 
-ifeq ($(OSNAME),sunos)
-_USE_NOSTDLIB := 1
-endif
-
 ifeq ($(OSNAME),darwin)
 _USE_NOSTDLIB := 1
 endif
@@ -211,12 +207,6 @@ ifeq ($(OSNAME),netbsd)
 STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm
 endif
 
-ifeq ($(OSNAME),sunos)
-#START_OBJ := $(shell for o in crti.o crtbegin.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
-#END_OBJ := $(shell for o in crtend.o crtn.o; do ${CXX} ${CXXFLAGS} -print-file-name=$$o; done)
-STDLIBS = ${STLPORT_LIB} ${_LGCC_S} -lpthread -lc -lm -lrt
-endif
-
 ifeq ($(OSNAME),darwin)
 ifndef USE_STATIC_LIBGCC
 # MacOS X, shared-libgcc
@@ -261,19 +251,6 @@ STDLIBS = ${STLPORT_LIB}
 else
 STDLIBS = 
 endif
-endif
-
-ifeq ($(OSNAME),sunos)
-define so_name
--Wl,-h$(1)
-endef
-
-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),linux)
