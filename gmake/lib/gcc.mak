@@ -263,19 +263,6 @@ STDLIBS =
 endif
 endif
 
-ifeq ($(OSNAME),hp-ux)
-define so_name
--Wl,-dynamic -Wl,+h$(1)
-endef
-
-dbg-shared:	LDFLAGS += -shared
-stldbg-shared:	LDFLAGS += -shared
-release-shared:	LDFLAGS += -shared
-install-dbg-shared:	LDFLAGS += -shared
-install-stldbg-shared:	LDFLAGS += -shared
-install-release-shared:	LDFLAGS += -shared
-endif
-
 ifeq ($(OSNAME),sunos)
 define so_name
 -Wl,-h$(1)

@@ -61,11 +61,7 @@ endif
 endif
 
 ifndef P_ARCH
-ifeq ($(OSNAME),hp-ux)
-P_ARCH := unknown
-else
 P_ARCH := $(shell uname -p | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
-endif
 endif
 
 else
@@ -179,14 +175,8 @@ endif
 ifndef BUILD_M_ARCH
 BUILD_M_ARCH := $(shell uname -m | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
 endif
-ifeq ($(OSNAME),hp-ux)
-ifndef BUILD_P_ARCH
-BUILD_P_ARCH := unknown
-endif
-else
 ifndef BUILD_P_ARCH
 BUILD_P_ARCH := $(shell uname -p | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',-')
-endif
 endif
 
 # end of BUILD_DATE not defined

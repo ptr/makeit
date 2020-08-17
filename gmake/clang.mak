@@ -128,17 +128,6 @@ dbg-shared : CXXFLAGS += -dynamic
 stldbg-shared : CXXFLAGS += -dynamic
 endif
 
-ifeq ($(OSNAME),hp-ux)
-ifneq ($(M_ARCH),ia64)
-release-static : OPT += -fno-reorder-blocks
-release-shared : OPT += -fno-reorder-blocks
-endif
-CCFLAGS = -pthread $(OPT)
-CFLAGS = -pthread $(OPT)
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = -pthread -fexceptions $(OPT)
-endif
-
 #ifeq ($(CXX_VERSION_MAJOR),3)
 #ifeq ($(CXX_VERSION_MINOR),2)
 #CXXFLAGS += -ftemplate-depth-32

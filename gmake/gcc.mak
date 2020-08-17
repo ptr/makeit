@@ -189,21 +189,6 @@ CXXFLAGS = $(OPT)
 endif
 endif
 
-ifeq ($(OSNAME),hp-ux)
-THREAD_FLAGS = -pthread
-EXCEPTIONS_FLAGS = -fexceptions
-ifndef EXACT_OPTIONS
-CCFLAGS = $(THREAD_FLAGS) $(OPT)
-CFLAGS = $(THREAD_FLAGS) $(OPT)
-# CXXFLAGS = -pthread -nostdinc++ -fexceptions $(OPT)
-CXXFLAGS = $(THREAD_FLAGS) $(EXCEPTIONS_FLAGS) $(OPT)
-else
-CCFLAGS = $(OPT)
-CFLAGS = $(OPT)
-CXXFLAGS = $(OPT)
-endif
-endif
-
 #ifeq ($(CXX_VERSION_MAJOR),3)
 #ifeq ($(CXX_VERSION_MINOR),2)
 #CXXFLAGS += -ftemplate-depth-32
@@ -271,15 +256,6 @@ stldbg-static : OPT += -g
 stldbg-shared : OPT += -g
 #stldbg-static-dep : OPT += -g
 #stldbg-shared-dep : OPT += -g
-endif
-
-ifndef EXACT_OPTIONS
-ifeq ($(OSNAME),hp-ux)
-ifneq ($(M_ARCH),ia64)
-release-static : OPT += -fno-reorder-blocks
-release-shared : OPT += -fno-reorder-blocks
-endif
-endif
 endif
 
 # dependency output parser (dependencies collector)

@@ -247,12 +247,6 @@ STDLIBS =
 endif
 endif
 
-ifeq ($(OSNAME),hp-ux)
-dbg-shared:	LDFLAGS += -shared -Wl,-dynamic -Wl,+h$(SO_NAME_DBGxx)
-stldbg-shared:	LDFLAGS += -shared -Wl,-dynamic -Wl,+h$(SO_NAME_STLDBGxx)
-release-shared:	LDFLAGS += -shared -Wl,-dynamic -Wl,+h$(SO_NAMExx)
-endif
-
 ifeq ($(OSNAME),sunos)
 dbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_DBGxx) ${NOSTDLIB}
 stldbg-shared:	LDFLAGS += -shared -Wl,-h$(SO_NAME_STLDBGxx) ${NOSTDLIB}
