@@ -1,6 +1,6 @@
 # -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2007, 2017
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2007, 2017, 2022
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -54,6 +54,25 @@ ALLLIBS = ${SO_NAME_OUTxxx}
 ALLLIBS_DBG = ${SO_NAME_OUT_DBGxxx}
 ALLLIBS_STLDBG = ${SO_NAME_OUT_STLDBGxxx}
 
+# Static libraries:
+
+ifdef LIBNAME
+A_NAME := ${LIBPREFIX}${LIBNAME}.$(ARCH)
+A_NAME_OUT := $(OUTPUT_DIR_A)/$(A_NAME)
+
+A_NAME_DBG := ${LIBPREFIX}${LIBNAME}${DBG_SUFFIX}.$(ARCH)
+A_NAME_OUT_DBG := $(OUTPUT_DIR_A_DBG)/$(A_NAME_DBG)
+
+ifndef WITHOUT_STLPORT
+A_NAME_STLDBG := ${LIBPREFIX}${LIBNAME}${STLDBG_SUFFIX}.$(ARCH)
+A_NAME_OUT_STLDBG := $(OUTPUT_DIR_A_STLDBG)/$(A_NAME_STLDBG)
+endif
+endif
+
+ALLSTLIBS = ${A_NAME_OUT}
+ALLSTLIBS_DBG = ${A_NAME_OUT_DBG}
+ALLSTLIBS_STLDBG = ${A_NAME_OUT_STLDBG}
+
 define lib_lib
 $(1)_SO_NAME        := ${LIBPREFIX}$(1).$(SO)
 $(1)_SO_NAMEx       := $${$(1)_SO_NAME}.$${$(1)_MAJOR}
@@ -91,19 +110,25 @@ endif
 ALLLIBS        += $${$(1)_SO_NAME_OUTxxx}
 ALLLIBS_DBG    += $${$(1)_SO_NAME_OUT_DBGxxx}
 ALLLIBS_STLDBG += $${$(1)_SO_NAME_OUT_STLDBGxxx}
-endef
-
-$(foreach l,$(LIBNAMES),$(eval $(call lib_lib,$(l))))
 
 # Static libraries:
 
-A_NAME := ${LIBPREFIX}${LIBNAME}.$(ARCH)
-A_NAME_OUT := $(OUTPUT_DIR_A)/$(A_NAME)
+$(1)_A_NAME     := ${LIBPREFIX}${1}.$(ARCH)
+$(1)_A_NAME_OUT := $(OUTPUT_DIR_A)/$${$(1)_A_NAME}
 
-A_NAME_DBG := ${LIBPREFIX}${LIBNAME}${DBG_SUFFIX}.$(ARCH)
-A_NAME_OUT_DBG := $(OUTPUT_DIR_A_DBG)/$(A_NAME_DBG)
+$(1)_A_NAME_DBG     := ${LIBPREFIX}${1}${DBG_SUFFIX}.$(ARCH)
+$(1)_A_NAME_OUT_DBG := $(OUTPUT_DIR_A_DBG)/$${$(1)_A_NAME_DBG}
 
 ifndef WITHOUT_STLPORT
-A_NAME_STLDBG := ${LIBPREFIX}${LIBNAME}${STLDBG_SUFFIX}.$(ARCH)
-A_NAME_OUT_STLDBG := $(OUTPUT_DIR_A_STLDBG)/$(A_NAME_STLDBG)
+$(1)_A_NAME_STLDBG     := ${LIBPREFIX}${1}${STLDBG_SUFFIX}.$(ARCH)
+$(1)_A_NAME_OUT_STLDBG := $(OUTPUT_DIR_A_STLDBG)/$${$(1)_A_NAME_STLDBG}
+# WITHOUT_STLPORT
 endif
+
+ALLSTLIBS        += $${$(1)_A_NAME_OUT}
+ALLSTLIBS_DBG    += $${$(1)_A_NAME_OUT_DBG}
+ALLSTLIBS_STLDBG += $${$(1)_A_NAME_OUT_STLDBG}
+
+endef
+
+$(foreach l,$(LIBNAMES),$(eval $(call lib_lib,$(l))))
