@@ -1,10 +1,9 @@
 # -*- Makefile-gmake -*-
 
-RULESBASE := ../..
 # EXTRA_POST := checks
 
 include Makefile.inc
-include ${RULESBASE}/gmake/top.mak
+include ../../gmake/top.mak
 
 INCLUDES += -I./include
 

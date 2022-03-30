@@ -1,4 +1,4 @@
-# Time-stamp: <2013-06-13 10:14:51 ptr>
+# -*- Makefile-gmake -*-
 #
 # Copyright (c) 2007,2008
 # Petr Ovtchenkov
@@ -12,7 +12,7 @@
 
 PHONY ?=
 
-RULESBASE ?= $(SRCROOT)/Makefiles
+RULESBASE := $(dir $(lastword ${MAKEFILE_LIST}))
 
 all:	$(addsuffix .pdf,$(PDFNAMES))
 

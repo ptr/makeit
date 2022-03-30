@@ -1,13 +1,11 @@
-# -*- Makefile -*- Time-stamp: <2011-08-22 19:18:48 ptr>
-
-RULESBASE := ../..
+# -*- Makefile-gmake -*-
 
 # EXTRA_POST := check-release-shared
 # EXTRA_POST_DBG := check-dbg-shared
 # EXTRA_POST_STLDBG := check-stldbg-shared
 
 include Makefile.inc
-include ${RULESBASE}/gmake/top.mak
+include ../../gmake/top.mak
 
 ifndef WITHOUT_STLPORT
 LDFLAGS += -Wl,-rpath=${STLPORT_LIB_DIR}

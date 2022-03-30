@@ -1,7 +1,5 @@
 # -*- Makefile-gmake -*-
 
-RULESBASE := ../..
-
 # EXTRA_POST := checks
 # EXTRA_POST_DBG := checks-dbg
 # EXTRA_POST_STLDBG := checks-stldbg
@@ -9,7 +7,7 @@ RULESBASE := ../..
 SUBDIRS := one two three
 DESTDIR := dest
 
-include ${RULESBASE}/gmake/subdirs.mak
+include ../../gmake/subdirs.mak
 
 check0:
 	$(call doinsubdirs,${SUBDIRS})

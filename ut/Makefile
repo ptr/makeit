@@ -1,8 +1,7 @@
 # -*- Makefile-gmake -*-
 
-RULESBASE := ..
-SUBDIRS := subdirs app1 app2 app2-mult app-c so1 somodule multiline_echo
-include ${RULESBASE}/gmake/subdirs.mak
+SUBDIRS := subdirs app1 app2 app2-mult app2-r app-c so1 so2 a1 a2 somodule multiline_echo
+include ../gmake/subdirs.mak
 
 check:
 	$(call doinsubdirs,${SUBDIRS})

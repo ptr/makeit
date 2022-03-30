@@ -1,6 +1,4 @@
-# -*- Makefile -*-
-
-RULESBASE := ../..
+# -*- Makefile-gmake -*-
 
 DESTDIR := $(CURDIR)
 # EXTRA_POST := check
@@ -11,7 +9,7 @@ INSTALL_BIN_DIR_DBG = $(INSTALL_BIN_DIR)
 INSTALL_DBG = 1
 
 include Makefile.inc
-include ${RULESBASE}/gmake/top.mak
+include ../../gmake/top.mak
 
 POST_INSTALL_DBG = touch $(DESTDIR)$(INSTALL_BIN_DIR)/post;
 

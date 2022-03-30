@@ -1,11 +1,9 @@
 # -*- Makefile-gmake -*-
 
-RULESBASE := ../..
-
 # identify OS and build date
-include ${RULESBASE}/gmake/sysid.mak
+include ../../gmake/sysid.mak
 # OS-specific definitions, like ln, install, etc. (guest host)
-include ${RULESBASE}/gmake/$(BUILD_OSNAME)/sys.mak
+include ../..//gmake/$(BUILD_OSNAME)/sys.mak
 
 define my_config
 line_one=yes

@@ -31,9 +31,9 @@ endef
 
 $(foreach prg,$(PRGNAMES),$(eval $(call prog_prog,$(prg))))
 
-include ${RULESBASE}/gmake/app/${COMPILER_NAME}.mak
-include ${RULESBASE}/gmake/app/rules.mak
-include ${RULESBASE}/gmake/app/rules-install.mak
+include ${RULESBASE}/app/${COMPILER_NAME}.mak
+include ${RULESBASE}/app/rules.mak
+include ${RULESBASE}/app/rules-install.mak
 
 define prog_clean
 clean::

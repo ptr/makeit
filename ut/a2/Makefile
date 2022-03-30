@@ -1,9 +1,7 @@
 # -*- Makefile-gmake -*-
 
-RULESBASE := ../..
-
 include Makefile.inc
-include ${RULESBASE}/gmake/top.mak
+include ../../gmake/top.mak
 
 check:	check-release-static check-dbg-static
 

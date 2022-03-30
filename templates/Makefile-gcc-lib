@@ -1,12 +1,11 @@
-# -*- Makefile -*- Time-stamp: <2011-08-22 19:28:43 ptr>
+# -*- Makefile-gmake -*-
 
-RULESBASE := ..
 COMPILER_NAME := gcc
 
 STLPORT_LIB_DIR = /export/home/ptr/STLport.lab/STLport/lib
 STLPORT_INCLUDE_DIR = /export/home/ptr/STLport.lab/STLport/stlport
 include Makefile-lib.inc
-include ${RULESBASE}/Makefiles/top.mak
+include ../gmake/top.mak
 
 
 INCLUDES += -I$(SRCROOT)/include -I$(STLPORT_INCLUDE_DIR)

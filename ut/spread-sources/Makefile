@@ -1,13 +1,11 @@
-# -*- makefile-gmake -*-
-
-RULESBASE := ../..
+# -*- Makefile-gmake -*-
 
 # EXTRA_POST := check
 # EXTRA_POST_DBG := check
 # EXTRA_POST_STLDBG := check
 
 include Makefile.inc
-include ${RULESBASE}/gmake/top.mak
+include ../../gmake/top.mak
 
 ifndef WITHOUT_STLPORT
 LDFLAGS += -Wl,-rpath=${STLPORT_LIB_DIR}

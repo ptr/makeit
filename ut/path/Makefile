@@ -1,8 +1,6 @@
-# -*- Makefile -*-
+# -*- Makefile-gmake -*-
 
-RULESBASE := ../..
-
-include ${RULESBASE}/gmake/top.mak
+include ../../gmake/top.mak
 
 .PHONY:	check real-check should-fail
 

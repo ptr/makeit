@@ -1,13 +1,11 @@
-# -*- Makefile -*- Time-stamp: <2011-08-22 19:18:12 ptr>
-
-RULESBASE := ../..
+# -*- Makefile-gmake -*-
 
 # EXTRA_POST := checks
 # EXTRA_POST_DBG := checks-dbg
 # EXTRA_POST_STLDBG := checks-stldbg
 
 include Makefile.inc
-include ${RULESBASE}/gmake/top.mak
+include ../../gmake/top.mak
 
 ifndef WITHOUT_STLPORT
 LDFLAGS += -Wl,-rpath=${STLPORT_LIB_DIR}
