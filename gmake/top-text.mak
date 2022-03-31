@@ -1,6 +1,6 @@
 # -*- makefile-gmake -*-
 #
-# Copyright (c) 2007-2014
+# Copyright (c) 2007-2014, 2022
 # Petr Ovtchenkov
 #
 # Licensed under the Academic Free License version 3.0
@@ -9,6 +9,8 @@
 .SUFFIXES:
 .SCCS_GET:
 .RCS_GET:
+
+SHELL := /bin/bash
 
 PHONY ?= all
 

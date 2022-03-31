@@ -1,6 +1,6 @@
 # -*- makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016, 2017
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2016, 2017, 2022
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -12,6 +12,8 @@
 .SUFFIXES:
 .SCCS_GET:
 .RCS_GET:
+
+SHELL := /bin/bash
 
 PHONY ?=
 

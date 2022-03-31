@@ -10,6 +10,8 @@
 .SCCS_GET:
 .RCS_GET:
 
+SHELL := /bin/bash
+
 PHONY ?=
 
 RULESBASE := $(dir $(lastword ${MAKEFILE_LIST}))

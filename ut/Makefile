@@ -1,6 +1,6 @@
 # -*- Makefile-gmake -*-
 
-SUBDIRS := subdirs app1 app2 app2-mult app2-r app-c so1 so2 a1 a2 somodule multiline_echo
+SUBDIRS := subdirs app1 app2 app2-mult app2-r app-c so1 so2 a1 a2 somodule multiline_echo sys-config
 include ../gmake/subdirs.mak
 
 check:
