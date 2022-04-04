@@ -182,22 +182,10 @@ endif
 # end of BUILD_DATE not defined
 endif
 
-ifndef PARALLEL
-ifndef NOPARALLEL
-ifeq ($(origin PARALLEL),undefined)
-# check -jN option from commandline, avoid override
-ifeq ($(filter -j%, ${MAKEFLAGS}),)
+ifeq ($(origin NOPARALLEL),undefined) # 3
+ifeq ($(origin PARALLEL),undefined) # 2
 PARALLEL := -j$(shell echo $$((`nproc` + 2))) PARALLEL=
-endif
-endif
-# NOPARALLEL
 else
-# prevent from setting -jN later
 PARALLEL := PARALLEL=
-# NOPARALLEL
-endif
-else
-# PARALLEL
-# drop -jN flag for submakes, avoid conflict with -jN in ${MAKEFLAGS}
-PARALLEL := PARALLEL=
-endif
+endif # 2
+endif # 3

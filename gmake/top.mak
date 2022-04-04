@@ -61,19 +61,11 @@ ifndef OSNAME
 # identify OS and build date
 include ${RULESBASE}/sysid.mak
 else
-ifdef PARALLEL
-# prevent from setting -jN later
-PARALLEL := PARALLEL=
-else
-ifeq ($(origin PARALLEL),undefined)
-# check -jN option from commandline, avoid override
-ifeq ($(filter -j%, ${MAKEFLAGS}),)
+ifeq ($(origin NOPARALLEL),undefined) # 3
+ifeq ($(origin PARALLEL),undefined) # 2
 PARALLEL := -j$(shell echo $$((`nproc` + 2))) PARALLEL=
-else
-PARALLEL := PARALLEL=
-endif
-endif
-endif
+endif # 2
+endif # 3
 endif
 # OS-specific definitions, like ln, install, etc. (guest host)
 include ${RULESBASE}/$(BUILD_OSNAME)/sys.mak

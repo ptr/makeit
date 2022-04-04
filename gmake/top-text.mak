@@ -25,7 +25,7 @@ PDFLATEX := pdflatex
 endif
 
 all:
-	${MAKE} ${ALL_TAGS}
+	${MAKE} ${PARALLEL} ${ALL_TAGS}
 
 ifndef OSNAME
 # identify OS and build date
