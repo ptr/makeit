@@ -222,6 +222,9 @@ ifndef USE_STATIC_LIBGCC
 release-shared :	LDFLAGS += -shared-libgcc
 dbg-shared :	LDFLAGS += -shared-libgcc
 stldbg-shared :	LDFLAGS += -shared-libgcc
+install-release-shared:	LDFLAGS += -shared-libgcc
+install-dbg-shared:	LDFLAGS += -shared-libgcc
+install-strip-shared:	LDFLAGS += -shared-libgcc
 endif
 ifndef WITHOUT_STLPORT
 STDLIBS = ${STLPORT_LIB}

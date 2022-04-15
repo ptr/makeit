@@ -264,6 +264,7 @@ release-shared:	LDFLAGS += -shared ${NOSTDLIB}
 install-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
 install-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
 install-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-strip-shared:	LDFLAGS += -shared ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),windows)
@@ -291,6 +292,7 @@ release-shared:	LDFLAGS += -shared ${NOSTDLIB}
 install-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
 install-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
 install-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
+install-strip-shared:	LDFLAGS += -shared ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),darwin)
