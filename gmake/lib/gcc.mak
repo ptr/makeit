@@ -126,6 +126,7 @@ ifdef _USE_NOSTDLIB
 NOSTDLIB :=
 
 # Check whether gcc builded with --disable-shared
+$(warning Extra compiler call)
 ifeq ($(shell PATH=${PATH} ${CXX} ${CXXFLAGS} -print-file-name=libgcc_eh.a),libgcc_eh.a)
 # gcc builded with --disable-shared, (no library libgcc_eh.a); all exception support in libgcc.a
 _LGCC_EH :=
@@ -154,7 +155,7 @@ endif
 # end of present libgcc_eh.a
 endif
 
-ifndef _LSUPCPP
+ifeq ($(origin _LSUPCPP),undefined)
 _LSUPCPP := $(shell PATH=${PATH} ${CXX} ${CXXFLAGS} -print-file-name=libsupc++.a)
 ifeq (${OSNAME},darwin)
 ifdef GCC_APPLE_CC
@@ -234,6 +235,7 @@ NOSTDLIB := -nodefaultlibs
 ifeq ($(OSNAME),windows)
 
 ifndef USE_STATIC_LIBGCC
+$(warning Extra compiler call for _LGCC_S)
 ifeq ($(shell PATH=${PATH} ${CXX} ${CXXFLAGS} -print-file-name=libgcc_s.a),libgcc_s.a)
 _LGCC_S := -lgcc
 else

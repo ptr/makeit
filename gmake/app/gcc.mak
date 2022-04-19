@@ -108,6 +108,7 @@ ifdef _USE_NOSTDLIB
 
 # Check whether gcc builded with --disable-shared
 ifndef _LGCC_EH
+$(warning Extra compiler call for _LGCC_EH)
 ifeq ($(shell PATH=${PATH} ${CXX} ${CXXFLAGS} -print-file-name=libgcc_eh.a),libgcc_eh.a)
 # gcc builded with --disable-shared, (no library libgcc_eh.a); all exception support in libgcc.a
 _LGCC_EH :=

@@ -1,6 +1,6 @@
-# -*- GNUmakefile -*-
+# -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002-2018
+# Copyright (c) 1997-1999, 2002-2018, 2022
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -65,7 +65,7 @@ CXX_VERSION_PATCH := $(shell echo ${CXX_VERSION} | awk 'BEGIN { FS = "."; } { pr
 endif
 
 # Check that we need option -fuse-cxa-atexit for compiler
-ifndef _CXA_ATEXIT
+ifeq ($(origin _CXA_ATEXIT),undefined)
 _CXA_ATEXIT := $(shell PATH=${PATH} ${CXX} -v 2>&1 | grep -q -e "--enable-__cxa_atexit" || echo "-fuse-cxa-atexit")
 endif
 

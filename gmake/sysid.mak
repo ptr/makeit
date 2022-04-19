@@ -139,7 +139,9 @@ endif
 
 # OS_VER := $(shell uname -s | tr '[A-Z]' '[a-z]' | tr ', /\\()"' ',//////' | tr ',/' ',_')
 
+ifndef BUILD_SYSTEM
 BUILD_SYSTEM := $(shell { uname -n; uname -s; uname -r; uname -v; uname -m; id -un; } | tr '\n' ' ' )
+endif
 BUILD_DATE := $(shell date +'%Y/%m/%d %T %Z')
 
 ifndef BUILD_OSNAME
@@ -149,7 +151,7 @@ endif
 # Some installation require root's privileges. If sudo found, it will be in use;
 # otherwise I will use 'su -c' (frequently, 'su' just not work when sudo present in system)
 
-ifndef SU
+ifeq ($(origin SU),undefined)
 SU := $(shell which sudo |& grep -q "no sudo" && if [ `id -u ` -eq 0 ]; then  echo "/bin/bash -c"; else echo "su -c"; fi || echo "sudo /bin/bash -c")
 endif
 
