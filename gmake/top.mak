@@ -13,7 +13,17 @@
 .SCCS_GET:
 .RCS_GET:
 
-SHELL := /bin/bash
+ifndef ORIGINAL_SHELL
+override SHELL := /bin/bash
+ifdef DEBUG_RULES
+export ORIGINAL_SHELL := ${SHELL}
+ifeq (${DEBUG_RULES},1)
+export SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL}
+else
+export SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL} -x
+endif
+endif
+endif
 
 PHONY ?=
 
@@ -136,15 +146,6 @@ endif
 endif
 
 .PHONY: $(PHONY)
-
-ifdef DEBUG_RULES
-ORIGINAL_SHELL := ${SHELL}
-ifeq (${DEBUG_RULES},1)
-SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL}
-else
-SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL} -x
-endif
-endif
 
 OUTPUT_DIRS := $(sort $(OUTPUT_DIRS))
 

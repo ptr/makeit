@@ -9,6 +9,18 @@
 # Licensed under the Academic Free License version 3.0
 #
 
+ifndef ORIGINAL_SHELL
+override SHELL := /bin/bash
+ifdef DEBUG_RULES
+export ORIGINAL_SHELL := ${SHELL}
+ifeq (${DEBUG_RULES},1)
+export SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL}
+else
+export SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL} -x
+endif
+endif
+endif
+
 ifndef BUILD_DATE
 
 # sysid sometimes included without top, so check for configs
