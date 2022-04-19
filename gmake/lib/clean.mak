@@ -25,8 +25,8 @@ ifndef WITHOUT_STLPORT
 	@-rm -f $${$(1)_SO_NAME_OUT_STLDBGxx}
 	@-rm -f $${$(1)_SO_NAME_OUT_STLDBGxxx}
 endif
-	@-[ -f $${$(1)_A_NAME_OUT} ] && rm -f $${$(1)_A_NAME_OUT}
-	@-[ -f $${$(1)_A_NAME_OUT_DBG} ] && rm -f $${$(1)_A_NAME_OUT_DBG}
+	@-if [ -f $${$(1)_A_NAME_OUT} ]; then rm -f $${$(1)_A_NAME_OUT}; else true; fi
+	@-if [ -f $${$(1)_A_NAME_OUT_DBG} ]; then rm -f $${$(1)_A_NAME_OUT_DBG}; else true; fi
 ifndef WITHOUT_STLPORT
 	@-rm -f $${$(1)_A_NAME_OUT_STLDBG}
 endif
@@ -58,8 +58,8 @@ ifndef WITHOUT_STLPORT
 	@-rm -f $$(DESTDIR)$$(INSTALL_LIB_DIR_STLDBG)/$$($(1)_SO_NAME_STLDBGxx)
 	@-rm -f $$(DESTDIR)$$(INSTALL_LIB_DIR_STLDBG)/$$($(1)_SO_NAME_STLDBGxxx)
 endif
-	-[ -f $$(DESTDIR)$$(INSTALL_LIB_DIR)/$${$(1)_A_NAME_OUT} ] && rm -f $$(DESTDIR)$$(INSTALL_LIB_DIR)/$${$(1)_A_NAME_OUT}
-	-[ -f $$(DESTDIR)$$(INSTALL_LIB_DIR_DBG)/$${$(1)_A_NAME_OUT_DBG} ] && rm -f $$(DESTDIR)$$(INSTALL_LIB_DIR_DBG)/$${$(1)_A_NAME_OUT_DBG}
+	-if [ -f $$(DESTDIR)$$(INSTALL_LIB_DIR)/$${$(1)_A_NAME_OUT} ]; then rm -f $$(DESTDIR)$$(INSTALL_LIB_DIR)/$${$(1)_A_NAME_OUT}; else true; fi
+	-if [ -f $$(DESTDIR)$$(INSTALL_LIB_DIR_DBG)/$${$(1)_A_NAME_OUT_DBG} ]; then rm -f $$(DESTDIR)$$(INSTALL_LIB_DIR_DBG)/$${$(1)_A_NAME_OUT_DBG}; else true; fi
 ifndef WITHOUT_STLPORT
 	@-rm -f $$(DESTDIR)$$(INSTALL_LIB_DIR_STLDBG)/$${$(1)_A_NAME_OUT_STLDBG}
 endif
@@ -84,8 +84,8 @@ ifndef WITHOUT_STLPORT
 	@-rm -f ${SO_NAME_OUT_STLDBGxx}
 	@-rm -f ${SO_NAME_OUT_STLDBGxxx}
 endif
-	@-[ -f ${A_NAME_OUT} ] && rm -f ${A_NAME_OUT}
-	@-[ -f ${A_NAME_OUT_DBG} ] && rm -f ${A_NAME_OUT_DBG}
+	@-if [ -f ${A_NAME_OUT} ]; then rm -f ${A_NAME_OUT}; else true; fi
+	@-if [ -f ${A_NAME_OUT_DBG} ]; then rm -f ${A_NAME_OUT_DBG}; else true; fi
 ifndef WITHOUT_STLPORT
 	@-rm -f ${A_NAME_OUT_STLDBG}
 endif
@@ -123,8 +123,8 @@ ifndef WITHOUT_STLPORT
 	@-rm -f $(DESTDIR)$(INSTALL_LIB_DIR_STLDBG)/$(SO_NAME_STLDBGxx)
 	@-rm -f $(DESTDIR)$(INSTALL_LIB_DIR_STLDBG)/$(SO_NAME_STLDBGxxx)
 endif
-	@-[ -f $(DESTDIR)$(INSTALL_LIB_DIR)/${A_NAME_OUT} ] && rm -f $(DESTDIR)$(INSTALL_LIB_DIR)/${A_NAME_OUT}
-	@-[ -f $(DESTDIR)$(INSTALL_LIB_DIR)/${A_NAME_OUT} ] && rm -f $(DESTDIR)$(INSTALL_LIB_DIR_DBG)/${A_NAME_OUT_DBG}
+	@-if [ -f $(DESTDIR)$(INSTALL_LIB_DIR)/${A_NAME_OUT} ]; then rm -f $(DESTDIR)$(INSTALL_LIB_DIR)/${A_NAME_OUT}; else true; fi
+	@-if [ -f $(DESTDIR)$(INSTALL_LIB_DIR)/${A_NAME_OUT} ]; then rm -f $(DESTDIR)$(INSTALL_LIB_DIR_DBG)/${A_NAME_OUT_DBG}; else true; fi
 ifndef WITHOUT_STLPORT
 	@-rm -f $(DESTDIR)$(INSTALL_LIB_DIR_STLDBG)/${A_NAME_OUT_STLDBG}
 endif
