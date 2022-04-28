@@ -38,6 +38,10 @@ endif
 # file to store generated dependencies for make:
 DEPENDS_COLLECTION     := $(PRE_OUTPUT_DIR)/.make.depend
 
+# file to store project and dependencies file names
+
+FILES_COLLECTION       := $(PRE_OUTPUT_DIR)/cscope.files
+
 # catalog for auxilary files, if any
 AUX_DIR                := $(PRE_OUTPUT_DIR)/.auxdir
 

@@ -10,7 +10,7 @@
 #
 
 PHONY += release-static-dep release-shared-dep dbg-static-dep dbg-shared-dep \
-         depend depend-clean
+         depend depend-clean CSCOPE
 
 ifndef WITHOUT_STLPORT
 PHONY += stldbg-static-dep stldbg-shared-dep
@@ -65,5 +65,11 @@ TAGS:	${_ALL_DEP}
 tags:	${_ALL_DEP}
 	@cat -s $(_ALL_DEP) /dev/null | sed -e 's/^.*://;s/^ *//;s/\\$$//;s/ $$//;s/ /\n/g' | sort -u | xargs ctags --tag-relative=yes
 endif
+
+CSCOPE:	${FILES_COLLECTION}
+
+${FILES_COLLECTION}:	depend
+	sed -e 's|[[:space:]]*\\$$||' -e '/^.*:/s|.*:||' -e 's|^[[:space:]]*||' -e 's| |\n|g' $(DEPENDS_COLLECTION) | sort -u > $@
+	cscope -b -k -q -i$@
 
 -include $(DEPENDS_COLLECTION)
