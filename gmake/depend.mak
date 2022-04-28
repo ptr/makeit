@@ -1,6 +1,6 @@
 # -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002-2014, 2017
+# Copyright (c) 1997-1999, 2002-2014, 2017, 2022
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -10,7 +10,7 @@
 #
 
 PHONY += release-static-dep release-shared-dep dbg-static-dep dbg-shared-dep \
-         depend
+         depend depend-clean
 
 ifndef WITHOUT_STLPORT
 PHONY += stldbg-static-dep stldbg-shared-dep
@@ -41,7 +41,21 @@ $(foreach n,$(PRGNAMES) $(LIBNAMES) $(PDFNAMES),$(eval $(call prgdep_,$(n)_)))
 
 OUTPUT_DIRS += $(dir $(DEPENDS_COLLECTION))
 
-depend::	${_ALL_DEP} | $(dir $(DEPENDS_COLLECTION))
+# remove $(DEPENDS_COLLECTION) to prevent interpretation in -include $(DEPENDS_COLLECTION) below:
+# old dependencies may be incorrect.
+
+depend-clean:
+	rm -f $(DEPENDS_COLLECTION)
+
+# do not use $(DEPENDS_COLLECTION) as target in rule:
+# due to -include $(DEPENDS_COLLECTION) directive, make will try
+# to build $(DEPENDS_COLLECTION) target. This is not what I want here,
+# because
+#  - dependencies may include generated files (that not exist yet);
+#  - I do not want to pay for dependencies generation in case of single build,
+#    like CI do.
+
+depend::	depend-clean ${_ALL_DEP} | $(dir $(DEPENDS_COLLECTION))
 	@cat -s $(_ALL_DEP) /dev/null > $(DEPENDS_COLLECTION)
 
 ifneq ($(OSNAME),windows)
