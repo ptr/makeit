@@ -16,7 +16,9 @@
 
 ifneq ($(OSNAME), windows)
 ifndef EXACT_OPTIONS
-OPT += -fPIC
+CFLAGS += -fPIC
+CCFLAGS += -fPIC
+CXXFLAGS += -fPIC
 endif
 endif
 

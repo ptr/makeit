@@ -237,6 +237,8 @@ endif
 # workaround for gcc 2.95.x bug:
 ifeq ($(CXX_VERSION_MAJOR),2)
 ifneq ($(OSNAME),windows)
-OPT += -fPIC
+CFLAGS += -fPIC
+CCFLAGS += -fPIC
+CXXFLAGS += -fPIC
 endif
 endif

@@ -234,20 +234,21 @@ stldbg-shared-dep : DEFS += -D_STLP_DEBUG
 
 # optimization and debug compiler flags
 
-ifeq ($(OPT),)
-release-static : OPT += -O2
-release-shared : OPT += -O2
+OPT_LEVEL ?= -O2
+OPT_LEVEL_DBG ?= -Og
 
-dbg-static : OPT += -g
-dbg-shared : OPT += -g
+release-static :  OPT += ${OPT_LEVEL}
+release-shared : OPT += ${OPT_LEVEL}
+
+dbg-static : OPT += ${OPT_LEVEL_DBG} -g
+dbg-shared : OPT += ${OPT_LEVEL_DBG} -g
 #dbg-static-dep : OPT += -g
 #dbg-shared-dep : OPT += -g
 
-stldbg-static : OPT += -g
-stldbg-shared : OPT += -g
+stldbg-static : OPT += ${OPT_LEVEL_DBG} -g
+stldbg-shared : OPT += ${OPT_LEVEL_DBG} -g
 #stldbg-static-dep : OPT += -g
 #stldbg-shared-dep : OPT += -g
-endif
 
 # dependency output parser (dependencies collector)
 
