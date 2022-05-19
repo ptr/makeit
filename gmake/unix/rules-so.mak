@@ -1,6 +1,6 @@
 # -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2017-2018
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2017-2018, 2022
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -55,9 +55,15 @@ ifeq ("${_C_SOURCES_ONLY}","")
 else
 	$$(LINK.c) $(call so_name,$${SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${START_OBJ$(1)} $$(OBJ$(1)) $$(LDLIBS$(1)) $${STDLIBS} $${END_OBJ$(1)}
 endif
+ifneq ($${SO_NAME$(1)xx},$${SO_NAME$(1)xxx})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${SO_NAME$(1)xx},$${SO_NAME$(1)xxx})
+endif
+ifneq ($${SO_NAME$(1)x},$${SO_NAME$(1)xx})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${SO_NAME$(1)x},$${SO_NAME$(1)xx})
+endif
+ifneq ($${SO_NAME$(1)},$${SO_NAME$(1)x})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${SO_NAME$(1)},$${SO_NAME$(1)x})
+endif
 endef
 
 define do_so_links_m
@@ -69,9 +75,15 @@ ifeq ("$${_$(2)_C_SOURCES_ONLY}","")
 else
 	$$(LINK.c) $(call so_name,$${$(2)_SO_NAME$(1)xx}) $$(LINK_OUTPUT_OPTION) $${$(2)_START_OBJ$(1)} $$($(2)_OBJ$(1)) $$($(2)_LDLIBS$(1)) $${STDLIBS} $${$(2)_END_OBJ$(1)}
 endif
+ifneq ($${$(2)_SO_NAME$(1)xx},$${$(2)_SO_NAME$(1)xxx})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${$(2)_SO_NAME$(1)xx},$${$(2)_SO_NAME$(1)xxx})
+endif
+ifneq ($${$(2)_SO_NAME$(1)x},$${$(2)_SO_NAME$(1)xx})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${$(2)_SO_NAME$(1)x},$${$(2)_SO_NAME$(1)xx})
+endif
+ifneq ($${$(2)_SO_NAME$(1)},$${$(2)_SO_NAME$(1)x})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${$(2)_SO_NAME$(1)},$${$(2)_SO_NAME$(1)x})
+endif
 endef
 
 define do_so_links_wk

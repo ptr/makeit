@@ -1,6 +1,6 @@
 # -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2007, 2018
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2007, 2018, 2022
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -89,18 +89,30 @@ install-strip:	$(INSTALL_STRIP_TAGS)
 define do_install_so_links
 $$(DESTDIR)$${INSTALL_LIB_DIR$(1)}/$${SO_NAME$(1)xxx}:	$${SO_NAME_OUT$(1)xxx} | $$(DESTDIR)$${INSTALL_LIB_DIR$(1)}
 	$$(INSTALL_SO) $${SO_NAME_OUT$(1)xxx} $$(DESTDIR)$$(INSTALL_LIB_DIR$(1))
+ifneq ($${SO_NAME$(1)xx},$${SO_NAME$(1)xxx})
 	@$(call do_so_links_1,$$(DESTDIR)$$(INSTALL_LIB_DIR$(1)),$${SO_NAME$(1)xx},$${SO_NAME$(1)xxx})
+endif
+ifneq ($${SO_NAME$(1)x},$${SO_NAME$(1)xx})
 	@$(call do_so_links_1,$$(DESTDIR)$$(INSTALL_LIB_DIR$(1)),$${SO_NAME$(1)x},$${SO_NAME$(1)xx})
+endif
+ifneq ($${SO_NAME$(1)},$${SO_NAME$(1)x})
 	@$(call do_so_links_1,$$(DESTDIR)$$(INSTALL_LIB_DIR$(1)),$${SO_NAME$(1)},$${SO_NAME$(1)x})
+endif
 endef
 
 define do_install_so_links_m
 ifdef INSTALL_LIB_DIR$(1)
 $$(DESTDIR)$${INSTALL_LIB_DIR$(1)}/$${$(2)_SO_NAME$(1)xxx}:	$${$(2)_SO_NAME_OUT$(1)xxx} | $$(DESTDIR)$${INSTALL_LIB_DIR$(1)}
 	$$(INSTALL_SO) $${$(2)_SO_NAME_OUT$(1)xxx} $$(DESTDIR)$$(INSTALL_LIB_DIR$(1))
+ifneq ($${$(2)_SO_NAME$(1)xx},$${$(2)_SO_NAME$(1)xxx})
 	@$(call do_so_links_1,$$(DESTDIR)$$(INSTALL_LIB_DIR$(1)),$${$(2)_SO_NAME$(1)xx},$${$(2)_SO_NAME$(1)xxx})
+endif
+ifneq ($${$(2)_SO_NAME$(1)x},$${$(2)_SO_NAME$(1)xx})
 	@$(call do_so_links_1,$$(DESTDIR)$$(INSTALL_LIB_DIR$(1)),$${$(2)_SO_NAME$(1)x},$${$(2)_SO_NAME$(1)xx})
+endif
+ifneq ($${$(2)_SO_NAME$(1)},$${$(2)_SO_NAME$(1)x})
 	@$(call do_so_links_1,$$(DESTDIR)$$(INSTALL_LIB_DIR$(1)),$${$(2)_SO_NAME$(1)},$${$(2)_SO_NAME$(1)x})
+endif
 endif
 endef
 
