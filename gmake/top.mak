@@ -13,18 +13,6 @@
 .SCCS_GET:
 .RCS_GET:
 
-ifndef ORIGINAL_SHELL
-override SHELL := /bin/bash
-ifdef DEBUG_RULES
-export ORIGINAL_SHELL := ${SHELL}
-ifeq (${DEBUG_RULES},1)
-export SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL}
-else
-export SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL} -x
-endif
-endif
-endif
-
 PHONY ?=
 
 RULESBASE := $(dir $(lastword ${MAKEFILE_LIST}))
@@ -71,11 +59,14 @@ ifndef OSNAME
 # identify OS and build date
 include ${RULESBASE}/sysid.mak
 else
-ifeq ($(origin NOPARALLEL),undefined) # 3
-ifeq ($(origin PARALLEL),undefined) # 2
-PARALLEL := -j$(shell echo $$((`nproc` + 2))) PARALLEL=
-endif # 2
-endif # 3
+SHELL := /bin/bash
+ifeq ($(origin NOPARALLEL),undefined)
+ifeq ($(origin PARALLEL),undefined)
+PARALLEL := -j${NPROC} PARALLEL=
+else
+PARALLEL := PARALLEL=
+endif
+endif
 endif
 # OS-specific definitions, like ln, install, etc. (guest host)
 include ${RULESBASE}/$(BUILD_OSNAME)/sys.mak
@@ -200,7 +191,22 @@ _CXA_ATEXIT := ${_CXA_ATEXIT}
 _LGCC_EH := ${_LGCC_EH}
 _LGCC_S := ${_LGCC_S}
 _LSUPCPP := ${_LSUPCPP}
+
+NPROC := $(shell echo $$((`nproc` + 2)))
 endef
 
 .config.mk:
 	@$(call multiline_echo,${config_cache}) > $@
+
+
+ifndef ORIGINAL_SHELL
+export ORIGINAL_SHELL := ${SHELL}
+endif
+
+ifdef DEBUG_RULES
+ifeq (${DEBUG_RULES},1)
+SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL}
+else
+SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL} -x
+endif
+endif

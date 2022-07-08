@@ -9,17 +9,7 @@
 # Licensed under the Academic Free License version 3.0
 #
 
-ifndef ORIGINAL_SHELL
-override SHELL := /bin/bash
-ifdef DEBUG_RULES
-export ORIGINAL_SHELL := ${SHELL}
-ifeq (${DEBUG_RULES},1)
-export SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL}
-else
-export SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL} -x
-endif
-endif
-endif
+SHELL := /bin/bash
 
 ifndef BUILD_DATE
 
@@ -196,10 +186,23 @@ endif
 # end of BUILD_DATE not defined
 endif
 
-ifeq ($(origin NOPARALLEL),undefined) # 3
-ifeq ($(origin PARALLEL),undefined) # 2
-PARALLEL := -j$(shell echo $$((`nproc` + 2))) PARALLEL=
+ifeq ($(origin NOPARALLEL),undefined)
+ifeq ($(origin PARALLEL),undefined)
+NPROC ?= $(shell echo $$((`nproc` + 2)))
+PARALLEL := -j${NPROC} PARALLEL=
 else
 PARALLEL := PARALLEL=
-endif # 2
-endif # 3
+endif
+endif
+
+ifndef ORIGINAL_SHELL
+export ORIGINAL_SHELL := ${SHELL}
+endif
+
+ifdef DEBUG_RULES
+ifeq (${DEBUG_RULES},1)
+SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL}
+else
+SHELL = $(warning $@: $? ($^))${ORIGINAL_SHELL} -x
+endif
+endif
