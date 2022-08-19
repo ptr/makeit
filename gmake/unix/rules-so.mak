@@ -90,7 +90,7 @@ ifeq ($(1),)
 $${SO_NAME_OUT$(1)xxx}:	LDFLAGS += -shared $${NOSTDLIB} -Wl,-S
 endif
 ifeq ($(1),_DBG)
-$${SO_NAME_OUT$(1)xxx}:	OPT += -g
+$${SO_NAME_OUT$(1)xxx}:	OPT += -ggdb
 $${SO_NAME_OUT$(1)xxx}:	LDFLAGS += -shared $${NOSTDLIB}
 endif
 endef
@@ -119,7 +119,7 @@ ifeq ($(1),)
 $${$(2)_SO_NAME_OUT$(1)xxx}:	LDFLAGS += -shared $${NOSTDLIB} -Wl,-S
 endif
 ifeq ($(1),_DBG)
-$${$(2)_SO_NAME_OUT$(1)xxx}:	OPT += -g
+$${$(2)_SO_NAME_OUT$(1)xxx}:	OPT += -ggdb
 $${$(2)_SO_NAME_OUT$(1)xxx}:	LDFLAGS += -shared $${NOSTDLIB}
 endif
 endef

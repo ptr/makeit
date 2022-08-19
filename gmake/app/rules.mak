@@ -95,9 +95,9 @@ endif
 
 $${$(1)_PRG}:	OPT += ${OPT_LEVEL}
 $${$(1)_PRG}:	LDFLAGS += -Wl,-S
-$${$(1)_PRG_DBG}:	OPT += ${OPT_LEVEL_DBG} -g
+$${$(1)_PRG_DBG}:	OPT += ${OPT_LEVEL_DBG} -ggdb
 ifndef WITHOUT_STLPORT
-$${$(1)_PRG_STLDBG}:	OPT += ${OPT_LEVEL_DBG} -g
+$${$(1)_PRG_STLDBG}:	OPT += ${OPT_LEVEL_DBG} -ggdb
 endif
 endef
 

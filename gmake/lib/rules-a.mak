@@ -48,7 +48,7 @@ $${A_NAME_OUT$(1)}:	$$(OBJ_A$(1)) | $$(OUTPUT_DIR_A$(1))
 
 $${A_NAME_OUT$(1)}:	OPT += ${OPT_LEVEL$(1)}
 ifeq ($(1),_DBG)
-$${A_NAME_OUT$(1)}:	OPT += -g
+$${A_NAME_OUT$(1)}:	OPT += -ggdb
 endif
 endef
 
@@ -59,7 +59,7 @@ $${$(2)_A_NAME_OUT$(1)}:	$$($(2)_OBJ_A$(1)) | $$(OUTPUT_DIR_A$(1))
 
 $${$(2)_A_NAME_OUT$(1)}:	OPT += ${OPT_LEVEL$(1)}
 ifeq ($(1),_DBG)
-$${$(2)_A_NAME_OUT$(1)}:	OPT += -g
+$${$(2)_A_NAME_OUT$(1)}:	OPT += -ggdb
 endif
 endef
 
