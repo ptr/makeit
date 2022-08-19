@@ -116,6 +116,16 @@ endif
 endif
 endef
 
+define do_install_so_links_m_wk2
+ifneq ($${INSTALL_LIB_DIR$(1)}/$${$(2)_SO_NAME$(1)xxx},$${INSTALL_LIB_DIR}/$${$(2)_SO_NAMExxx})
+$(call do_install_so_links_m,$(1),$(2))
+else
+ifdef _PREFER_DBG_INSTALL
+$(call do_install_so_links_m,$(1),$(2))
+endif
+endif
+endef
+
 # Workaround for GNU make 3.80; see comments in rules-so.mak
 define do_install_so_links_wk
 # expand to nothing, if equal
@@ -123,8 +133,16 @@ ifneq (${INSTALL_LIB_DIR}/${SO_NAMExxx},${INSTALL_LIB_DIR_STLDBG}/${SO_NAME_STLD
 # expand to nothing, if WITHOUT_STLPORT
 ifndef WITHOUT_STLPORT
 $(call do_install_so_links,$(1))
-$(foreach l,$(LIBNAMES),$(eval $(call do_install_so_links_m,$(1),$(l))))
 endif
+else
+ifdef _PREFER_DBG_INSTALL
+ifndef WITHOUT_STLPORT
+$(call do_install_so_links,$(1))
+endif
+endif
+endif
+ifndef WITHOUT_STLPORT
+$(foreach l,$(LIBNAMES),$(eval $(call do_install_so_links_m_wk2,$(1),$(l))))
 endif
 endef
 
@@ -133,13 +151,23 @@ define do_install_so_links_wk2
 # expand to nothing, if equal
 ifneq (${INSTALL_LIB_DIR}/${SO_NAMExxx},${INSTALL_LIB_DIR_DBG}/${SO_NAME_DBGxxx})
 $(call do_install_so_links,$(1))
-$(foreach l,$(LIBNAMES),$(eval $(call do_install_so_links_m,$(1),$(l))))
+else
+ifdef _PREFER_DBG_INSTALL
+$(call do_install_so_links,$(1))
 endif
+endif
+$(foreach l,$(LIBNAMES),$(eval $(call do_install_so_links_m_wk2,$(1),$(l))))
 endef
 
-
+ifneq (${INSTALL_LIB_DIR}/${SO_NAMExxx},${INSTALL_LIB_DIR_DBG}/${SO_NAME_DBGxxx})
 $(eval $(call do_install_so_links,))
+else
+ifndef _PREFER_DBG_INSTALL
+$(eval $(call do_install_so_links,))
+endif
+endif
 $(foreach l,$(LIBNAMES),$(eval $(call do_install_so_links_m,,$(l))))
+
 # ifneq (${INSTALL_LIB_DIR}/${SO_NAMExxx},${INSTALL_LIB_DIR_DBG}/${SO_NAME_DBGxxx})
 # $(eval $(call do_install_so_links,_DBG))
 $(eval $(call do_install_so_links_wk2,_DBG))
