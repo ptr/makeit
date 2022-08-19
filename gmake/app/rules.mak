@@ -1,6 +1,6 @@
 # -*- Makefile-gmake -*-
 #
-# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2017-2018
+# Copyright (c) 1997-1999, 2002, 2003, 2005-2014, 2017-2018, 2022
 # Petr Ovtchenkov
 #
 # Portion Copyright (c) 1999-2001
@@ -13,9 +13,29 @@ dbg-shared:	$(EXTRA_PRE_DBG) ${ALLPRGS_DBG} $(EXTRA_POST_DBG)
 
 dbg-static:	$(EXTRA_PRE_DBG) ${ALLPRGS_DBG} $(EXTRA_POST_DBG)
 
+ifdef EXTRA_PRE_DBG
+ifdef ALLPRGS_DBG
+${ALLPRGS_DBG}:	$(EXTRA_PRE_DBG)
+endif
+endif
+
+ifdef EXTRA_POST_DBG
+$(EXTRA_POST_DBG):	$(EXTRA_PRE_DBG) ${ALLPRGS_DBG}
+endif
+
 release-shared:	$(EXTRA_PRE) ${ALLPRGS} $(EXTRA_POST)
 
 release-static:	$(EXTRA_PRE) ${ALLPRGS} $(EXTRA_POST)
+
+ifdef EXTRA_PRE
+ifdef ALLPRGS
+${ALLPRGS}:	$(EXTRA_PRE)
+endif
+endif
+
+ifdef EXTRA_POST
+$(EXTRA_POST):	$(EXTRA_PRE) ${ALLPRGS}
+endif
 
 ifndef WITHOUT_STLPORT
 stldbg-shared:	$(EXTRA_PRE_STLDBG) ${ALLPRGS_STLDBG} $(EXTRA_POST_STLDBG)
@@ -71,6 +91,13 @@ ifndef WITHOUT_STLPORT
 $${$(1)_PRG_STLDBG}:	$$($(1)_OBJ_STLDBG) $$($(1)_START_OBJ_STLDBG) $$($(1)_END_OBJ_STLDBG) $$($(1)_LIBSDEP_STLDBG) | $${OUTPUT_DIR_STLDBG}
 	$$(call clnk_str,$$($(1)_OBJ_STLDBG),$$($(1)_START_OBJ_STLDBG),$$($(1)_END_OBJ_STLDBG),$$($(1)_LDLIBS_STLDBG))
 endif
+endif
+
+$${$(1)_PRG}:	OPT += ${OPT_LEVEL}
+$${$(1)_PRG}:	LDFLAGS += -Wl,-S
+$${$(1)_PRG_DBG}:	OPT += ${OPT_LEVEL_DBG} -g
+ifndef WITHOUT_STLPORT
+$${$(1)_PRG_STLDBG}:	OPT += ${OPT_LEVEL_DBG} -g
 endif
 endef
 

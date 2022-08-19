@@ -15,7 +15,27 @@ PHONY += release-static dbg-static stldbg-static
 
 release-static: $(EXTRA_PRE) ${ALLSTLIBS} $(EXTRA_POST)
 
+ifdef EXTRA_PRE
+ifdef ALLSTLIBS
+${ALLSTLIBS}:	$(EXTRA_PRE)
+endif
+endif
+
+ifdef EXTRA_POST
+$(EXTRA_POST):	$(EXTRA_PRE) ${ALLSTLIBS}
+endif
+
 dbg-static:	$(EXTRA_PRE_DBG) ${ALLSTLIBS_DBG} $(EXTRA_POST_DBG)
+
+ifdef EXTRA_PRE_DBG
+ifdef ALLSTLIBS_DBG
+${ALLSTLIBS_DBG}:	$(EXTRA_PRE_DBG)
+endif
+endif
+
+ifdef EXTRA_POST_DBG
+$(EXTRA_POST_DBG):	$(EXTRA_PRE_DBG) ${ALLSTLIBS_DBG}
+endif
 
 ifndef WITHOUT_STLPORT
 stldbg-static:	$(EXTRA_PRE_STLDBG) ${ALLSTLIBS_STLDBG} $(EXTRA_POST_STLDBG)
@@ -25,12 +45,22 @@ define do_a_libs
 $${A_NAME_OUT$(1)}:	$$(OBJ_A$(1)) | $$(OUTPUT_DIR_A$(1))
 	rm -f $$@
 	$$(AR) $$(AR_INS_R) $$(AR_OUT) $$(OBJ_A$(1))
+
+$${A_NAME_OUT$(1)}:	OPT += ${OPT_LEVEL$(1)}
+ifeq ($(1),_DBG)
+$${A_NAME_OUT$(1)}:	OPT += -g
+endif
 endef
 
 define do_a_libs_m
 $${$(2)_A_NAME_OUT$(1)}:	$$($(2)_OBJ_A$(1)) | $$(OUTPUT_DIR_A$(1))
 	rm -f $$@
 	$$(AR) $$(AR_INS_R) $$(AR_OUT) $$($(2)_OBJ_A$(1))
+
+$${$(2)_A_NAME_OUT$(1)}:	OPT += ${OPT_LEVEL$(1)}
+ifeq ($(1),_DBG)
+$${$(2)_A_NAME_OUT$(1)}:	OPT += -g
+endif
 endef
 
 define do_a_libs_wk

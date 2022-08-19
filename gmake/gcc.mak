@@ -237,19 +237,6 @@ stldbg-shared-dep : DEFS += -D_STLP_DEBUG
 OPT_LEVEL ?= -O2
 OPT_LEVEL_DBG ?= -Og
 
-release-static :  OPT += ${OPT_LEVEL}
-release-shared : OPT += ${OPT_LEVEL}
-
-dbg-static : OPT += ${OPT_LEVEL_DBG} -g
-dbg-shared : OPT += ${OPT_LEVEL_DBG} -g
-#dbg-static-dep : OPT += -g
-#dbg-shared-dep : OPT += -g
-
-stldbg-static : OPT += ${OPT_LEVEL_DBG} -g
-stldbg-shared : OPT += ${OPT_LEVEL_DBG} -g
-#stldbg-static-dep : OPT += -g
-#stldbg-shared-dep : OPT += -g
-
 # dependency output parser (dependencies collector)
 
 DP_OUTPUT_DIR = | sed 's|\($(basename $(notdir $<))\)\.o[ :]*|$(dir $@)\1.o $@ : |g' > $@; \

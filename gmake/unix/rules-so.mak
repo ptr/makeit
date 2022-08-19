@@ -15,7 +15,27 @@ PHONY += release-shared dbg-shared stldbg-shared
 
 release-shared:	$(EXTRA_PRE) ${ALLLIBS} $(EXTRA_POST)
 
+ifdef EXTRA_PRE
+ifdef ALLLIBS
+${ALLLIBS}:	$(EXTRA_PRE)
+endif
+endif
+
+ifdef EXTRA_POST
+$(EXTRA_POST):	$(EXTRA_PRE) ${ALLLIBS}
+endif
+
 dbg-shared:	$(EXTRA_PRE_DBG) ${ALLLIBS_DBG} $(EXTRA_POST_DBG)
+
+ifdef EXTRA_PRE_DBG
+ifdef ALLLIBS_DBG
+${ALLLIBS_DBG}:	$(EXTRA_PRE_DBG)
+endif
+endif
+
+ifdef EXTRA_POST_DBG
+$(EXTRA_POST_DBG):	$(EXTRA_PRE_DBG) ${ALLLIBS_DBG}
+endif
 
 ifndef WITHOUT_STLPORT
 stldbg-shared:	$(EXTRA_PRE_STLDBG) ${ALLLIBS_STLDBG} $(EXTRA_POST_STLDBG)
@@ -64,6 +84,15 @@ endif
 ifneq ($${SO_NAME$(1)},$${SO_NAME$(1)x})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${SO_NAME$(1)},$${SO_NAME$(1)x})
 endif
+
+$${SO_NAME_OUT$(1)xxx}:	OPT += $${OPT_LEVEL$(1)}
+ifeq ($(1),)
+$${SO_NAME_OUT$(1)xxx}:	LDFLAGS += -shared $${NOSTDLIB} -Wl,-S
+endif
+ifeq ($(1),_DBG)
+$${SO_NAME_OUT$(1)xxx}:	OPT += -g
+$${SO_NAME_OUT$(1)xxx}:	LDFLAGS += -shared $${NOSTDLIB}
+endif
 endef
 
 define do_so_links_m
@@ -83,6 +112,15 @@ ifneq ($${$(2)_SO_NAME$(1)x},$${$(2)_SO_NAME$(1)xx})
 endif
 ifneq ($${$(2)_SO_NAME$(1)},$${$(2)_SO_NAME$(1)x})
 	@$(call do_so_links_1,$$(OUTPUT_DIR$(1)),$${$(2)_SO_NAME$(1)},$${$(2)_SO_NAME$(1)x})
+endif
+
+$${$(2)_SO_NAME_OUT$(1)xxx}:	OPT += $${OPT_LEVEL$(1)}
+ifeq ($(1),)
+$${$(2)_SO_NAME_OUT$(1)xxx}:	LDFLAGS += -shared $${NOSTDLIB} -Wl,-S
+endif
+ifeq ($(1),_DBG)
+$${$(2)_SO_NAME_OUT$(1)xxx}:	OPT += -g
+$${$(2)_SO_NAME_OUT$(1)xxx}:	LDFLAGS += -shared $${NOSTDLIB}
 endif
 endef
 

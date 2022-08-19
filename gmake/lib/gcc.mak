@@ -261,14 +261,6 @@ ifeq ($(OSNAME),linux)
 define so_name
 -Wl,-h$(1)
 endef
-
-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-strip-shared:	LDFLAGS += -shared ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),windows)
@@ -289,14 +281,6 @@ ifeq ($(OSNAME),freebsd)
 define so_name
 -Wl,-h$(1)
 endef
-
-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-strip-shared:	LDFLAGS += -shared ${NOSTDLIB}
 endif
 
 ifeq ($(OSNAME),darwin)
@@ -315,11 +299,4 @@ ifeq ($(OSNAME),openbsd)
 define so_name
 -Wl,-soname -Wl,$(1)
 endef
-
-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-dbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-stldbg-shared:	LDFLAGS += -shared ${NOSTDLIB}
-install-release-shared:	LDFLAGS += -shared ${NOSTDLIB}
 endif
